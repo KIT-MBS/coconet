@@ -1,2 +1,2 @@
 # coconet
-RNA contact prediction using coevolution and convolutional neural network
+RNA contact prediction using **Co**evolution and **Co**nvolutional **N**eural ne**t**work
