@@ -1,2 +1,2 @@
 # coconet
-Shallow learning on RNA co-evolution
+RNA contact prediction using coevolution and convolutional neural network
