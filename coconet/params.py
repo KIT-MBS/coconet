@@ -113,6 +113,6 @@ coconet_mat_2x7x7 = np.array([
 
 COCONET_PARAMS_DICT = {
     'coconet_mat_3x3' : coconet_mat_3x3, 'coconet_mat_2x3x3' : coconet_mat_2x3x3,
-    'coconet_mat_5x5' : coconet_mat_5x5, 'cocnet_mat_2x5x5' : coconet_mat_2x5x5,
+    'coconet_mat_5x5' : coconet_mat_5x5, 'coconet_mat_2x5x5' : coconet_mat_2x5x5,
     'coconet_mat_7x7' : coconet_mat_7x7, 'coconet_mat_2x7x7' : coconet_mat_2x7x7 
 }
