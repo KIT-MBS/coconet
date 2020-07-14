@@ -1,25 +1,28 @@
 
-"""
+"""Module for defining command line arguments
 """
 
 class CmdArgs:
     """
     """
+    verbose_optional = '--verbose'
+    verbose_optional_help='''display logging messages on the terminal.
+    '''
+
     msa_file = 'msa_file'
     msa_file_help = '''FASTA formatted MSA file path containing aligned RNA 
     sequences.
     '''
 
-    refseq_file_optional = 'refseq_file'
-    refseq_file_help = '''Path to FASTA formatted text file containing RNA 
-    reference sequence. If the file contains multiple sequences, the first one is 
-    taken.
+    matrix_size = '--msize'
+    matrix_size_help = '''the size of filter matrix. This value is the size 
+    of one of the dimensions of the square matrix and must be 3, 5, or 7.
     '''
 
-    pdb_id = 'pdb_id'
-    pdb_id_help = '''The name (identification) of the RNA in the PDB database.
+    wc_and_nwc_optional = '--wc_and_nwc'
+    wc_and_nwc_optional_help = '''use two matrices one for Watson-Crick nucleotide pairs
+    and the other for non-Watson-Crick nucleotide pairs.
     '''
 
-    pdb_chain_name = 'pdb_chain_name'
-    pdb_chain_name_help = '''Chain name of of the RNA in the PDB structure.
-    '''
+if __name__ == '__main__':
+    print('You are running module {}'.format(__file__))
