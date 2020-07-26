@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read() 
 
 requirements = [
-    'pydca==*'
+    'pydca==1.22'
 ]
 
 
