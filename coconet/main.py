@@ -68,7 +68,7 @@ def write_site_pair_score_data_to_file(sorted_data_list, output_file_path):
     return None 
 
 
-def write_output_data(dca_data, coconet_data, input_msa_file_basename):
+def write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_used):
     """
     """
     output_dir_name = 'Results_' + input_msa_file_basename
@@ -82,7 +82,7 @@ def write_output_data(dca_data, coconet_data, input_msa_file_basename):
     # write data 
     dca_results_file  = 'DCA_' + input_msa_file_basename  + '.txt'
     dca_results_file = os.path.join(output_dir_name, dca_results_file)
-    coconet_results_file = 'COCONET_' + input_msa_file_basename + '.txt'
+    coconet_results_file = 'COCONET' +  matrix_used + '_' + input_msa_file_basename + '.txt'
     coconet_results_file = os.path.join(output_dir_name, coconet_results_file)
     sorted_dca_data = sorted(dca_data.items(), key = lambda d : d[1], reverse = True)
     sorted_coconet_data = sorted(coconet_data.items(), key = lambda d : d[1], reverse = True)
@@ -112,11 +112,13 @@ def execute_from_command_line(msa_file, matrix_size, wc_and_nwc= False, verbose=
     conv_inst  = Convolution(matrix_size)
     if not wc_and_nwc:
         coconet_data = conv_inst.convolutionNxN_reweigh_dca_scores(dca_data, weight_matrix, len(refseq))
+        matrix_used = '{}x{}'.format(matrix_size, matrix_size)
     else:
         coconet_data =conv_inst.convolutionNxN_reweigh_dca_scores_WC_and_NONWC(dca_data, weight_matrix, refseq)
+        matrix_used = '2x{}x{}'.format(matrix_size, matrix_size)
     # write results to file   
     input_msa_file_basename, _ext = os.path.splitext(os.path.basename(msa_file))
-    write_output_data(dca_data, coconet_data, input_msa_file_basename)
+    write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_used)
 
     logger.info('\n\tDone')
 
