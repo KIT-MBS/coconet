@@ -2,7 +2,7 @@
 RNA contact prediction using **Co**evolution and **Co**nvolutional Neural **Net**work 
 
 # Dependencies
-Coconet uses [pydca](https://github.com/KIT-MBS/pydca) to perform computations on the coevolutionary layer.
+**coconet** uses [pydca](https://github.com/KIT-MBS/pydca) to perform computations on the coevolutionary layer.
 
 # Usage 
 The package can be manually downloaded or cloned using the command  
@@ -36,7 +36,7 @@ optional argument `--wc_and_nwc`. For example.
 ```bash
 $ python -m coconet.main <msa_file>  --msize 7 --wc_and_nwc --verbose
 ```
-The above command executes  **cococnet** using two 7x7 matrices.
+The above command executes  **coconet** using two 7x7 matrices.
 
 Finally, help messages can be prited out on the screen when the command 
 ```bash
