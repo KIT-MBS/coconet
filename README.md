@@ -1,6 +1,6 @@
 # coconet
 RNA contact prediction using **Co**evolution and **Co**nvolutional Neural **Net**work.
-Its implemented in python and requirs python version 3.5 or later versions.
+Its implemented in Python and requires Python version 3.5 or later versions.
 
 # Dependencies
 **coconet** uses [pydca](https://github.com/KIT-MBS/pydca) to perform computations on the coevolutionary layer.
