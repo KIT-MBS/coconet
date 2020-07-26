@@ -37,5 +37,5 @@ setup(
             "coconet=coconet.main.run_coconet"
         ],
     },
-    test_suite="tests",
+    #test_suite="tests",
 )
