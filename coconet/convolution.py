@@ -25,6 +25,10 @@ class Convolution:
                 An instance of Convolution class. 
             fm_size : int 
                 Number of rows or columns of a square filter matrix.
+            liner_dist : int 
+                nucleotide-nucleotide distance in sequence.
+            contact_dist : float 
+                cut-off distance for PDB contact definition.
         
         Returns 
         -------
@@ -91,6 +95,10 @@ class Convolution:
             refseq : str 
                 Reference sequence in character representation, all letters in 
                 uppercase.
+            i: int 
+                First site in pair.
+            j : int 
+                Second site in pair
         
         Returns
         -------
@@ -130,6 +138,10 @@ class Convolution:
             refseq : str 
                 Reference sequence in character representation, all letters in 
                 uppercase.
+            i: int 
+                First site in pair.
+            j : int 
+                Second site in pair
         
         Returns
         -------
@@ -172,6 +184,8 @@ class Convolution:
             dca_scores : dict 
                 A dictionary whose keys are site pairs (i, j) such that j > i and 
                 whose values are the DCA scores.
+            refseq_len : int 
+                Length of reference sequence 
 
         Returns 
         -------
@@ -206,6 +220,8 @@ class Convolution:
             dca_scores : dict 
                 A dictionary whose keys are site pairs (i, j) such that j > i and 
                 whose values are the DCA scores.
+            refseq_len : int 
+                Length of reference sequence.
 
         Returns 
         -------
@@ -231,11 +247,13 @@ class Convolution:
 
         Parameters
         ----------
-            dca_scores : dict 
+            unweighed_dca_scores : dict 
                 A dictionary whose keys are site pairs (i, j) such that j > i and 
                 whose values are the DCA scores.
             weights : list 
                 A  list if weights
+            refseq : str 
+                Reference sequene.
 
          Returns 
         -------
@@ -296,6 +314,8 @@ class Convolution:
                 whose values are the DCA scores.
             weights : list 
                 A  list if weights
+            refseq_len : int
+                Reference sequence length.
 
          Returns 
         -------
@@ -307,7 +327,11 @@ class Convolution:
         logger.info('\n\tPerforming convolution using a {}x{} matrix'.format(
             self.__fm_size, self.__fm_size)
         )
-        
+        try:
+            assert weights.size % 2 == 1 # Make sure that we are not using this method for WC and NWC case.
+        except AssertionError:
+            logger.error('\n\t Matrix size should not be even to use this function.')
+            raise
         logger.info('\n\tNumber of sites: {} '.format(refseq_len))
         #verify that all site-pairs are included in both pdb_contacts and dca_scores
         self.validate_dca_scores(unweighed_dca_scores, refseq_len)
