@@ -12,7 +12,7 @@ requirements = [
 setup(
     name="coconet",
     version="0.10",
-    authors="Mehari B. Zerihun, Fabrizio Pucci and Alexander Schug",
+    author="Mehari B. Zerihun, Fabrizio Pucci and Alexander Schug",
     author_email="mbzerihun@gmail.com",
     python_requires=">=3.5",
     description="RNA contact prediction using coevolution and convolutional neural network",
