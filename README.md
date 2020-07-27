@@ -18,8 +18,8 @@ Once  **coconet** is downloaded change to the directory containing file
 python -m coconet.main <msa_file> --verbose 
 ```
 where `<msa_file>` denotes FASTA formatted multiple sequence alignment (MSA) file of an 
-RNA. The reference/target sequence should be included at the first line of the 
-input MSA file, and `--verbose` is an optional argument that  allows logging 
+RNA. Note that the first sequence in the MSA file should be the target/reference sequence. 
+The optional argument `--verbose` allows logging 
 messages printed on the screen. 
 
 By default **coconet** uses a single 3x3 matrix. However, its possible to specify
