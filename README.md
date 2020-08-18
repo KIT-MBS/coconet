@@ -4,9 +4,12 @@ Its implemented in Python and requires Python version 3.5 or later versions.
 
 # Dependencies
 **coconet** uses [pydca](https://github.com/KIT-MBS/pydca) to perform computations on the coevolutionary layer.
-You need to install the most recent version (i.e., version 1.22) of [pydca](https://github.com/KIT-MBS/pydca) before 
-running running computations using **coconet**.
-
+You need to install the most recent version (i.e., version 1.22 ) of [pydca](https://github.com/KIT-MBS/pydca). 
+By default the command 
+```
+pip install pydca
+```
+installs the required version. 
 # Usage 
 The package can be manually downloaded or cloned using the command  
 ```bash
