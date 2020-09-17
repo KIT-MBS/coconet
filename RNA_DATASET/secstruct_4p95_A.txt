@@ -1,0 +1,4 @@
+PDBID : 4p95_A
+SEQUENCE : cAUCCGGUAUCCCAAGACAAUCUCGGGUUGGGUUGGGAAGUAUCAUGGCUAAUCACCAUGAUGCAAUCGGGUUGAACACUUAAUUGGGUUAAAACGGUGGGGGACGAUCCCGUAACAUCCGUCCUAACGGCGACAGACUGCACGGCCCUGCCUCAGGUGUGUCCAAUGAacAGUCGUUCCGAAAGGAAG
+SECSTRUCT : ..{((((...(((((..(((((...)))))..)))))..(((((((((...[[[.)))))))))..)))).(((.((((......(((((}..((((..(((...]]]))).......))))((....)).....[[[[[...))))).(((...))))))).)))....]]]]].((((....)))).
+

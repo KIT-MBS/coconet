@@ -1,0 +1,4 @@
+PDBID : 4r4v
+SEQUENCE : gGCGCUGUGUCGCAAUCUGCGAAGGGCGUCGUCGGCCCAAGCGGUAGUAAGCAGGGAACUCACCUCCAAUGAAACACAUUGUCGUAGCAGUUGACUACUGUUAUGUGAUUGGUAGAGGCUAAGUGACGGUAUUGGCGUAAGCCAAUACCGCAGCACAGCACAAGCCCGCUUGCGAGAUUACAGCGC
+SECSTRUCT : .((((((((((.....((((...((((.......))))..))))..((((((.(((..((((((..(((((.....)))))..(((((((.......)))))))......))).)))(((..(((.((((((((((....))))))))))...)))))).....)))))))))..))).)))))))
+

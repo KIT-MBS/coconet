@@ -1,0 +1,9 @@
+PDBID: 1gid_A 
+
+SEQUENCE: gAAUUGCGGGAAAGGGGUCAACAGCCGUUCAGUACCAAGUCUCAGGGGAAACUUUGAGAUGGCCUUGCAAAGGGUAUGGU
+SEQUENCE: AAUAAGCUGACGGACAUGGUCCUAACCACGCAGCCAAGUCCUAAGUCAACAGAUCUUCUGUUGAUAUGGAUGCAGUUC
+
+
+SECSTRUCT: (...((((((...((((((.....(((.((((.(((..(((((((((....)))))))))..((.......))....)))
+SECSTRUCT: ......)))))))....))))))..)).))))..)..((((..((((((((((...))))))))).))))).......
+

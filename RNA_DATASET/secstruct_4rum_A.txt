@@ -1,0 +1,4 @@
+PDBID : 4rum_A
+SEQUENCE : GGAACUGAGCAGGCAAUGACCAGAGCGGUCAUGCAGCCGGGCUGCGAAAGCGGCAACAGAUGAUACACGCACAUCUGUGGGACAGUUCCCAc
+SECSTRUCT : (((((((..(.(((.((((((.....))))))...)))..(((((....))))).(((((((.........)))))))..).)))))))...
+

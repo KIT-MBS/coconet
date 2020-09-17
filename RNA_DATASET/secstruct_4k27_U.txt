@@ -1,0 +1,4 @@
+PDBID : 4k27_U
+SEQUENCE : GCCCCUGCCUGCCUGCAGCUAAGGAUGAAAGUCUAUGCUGCCUGCCUGCCUGGGC
+SECSTRUCT : ((((..((..((..(((((...((((....))))..)))))..))..))..))))
+

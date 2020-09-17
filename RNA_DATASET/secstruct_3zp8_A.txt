@@ -1,0 +1,4 @@
+PDBID : 3zp8_A
+SEQUENCE : gGAUGUACUACCAGCUGAUGAGUCCCAAAUAGGACGAAACGCC
+SECSTRUCT : ..............(....).((((......))))........
+

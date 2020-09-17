@@ -1,0 +1,4 @@
+PDBID : 3d2g_A
+SEQUENCE : GGGACCAGGGGUGCUUGUUCACAGGCUGAGAAAGUCCCUUUGAACCUGAACAGGGUAAUGCCUGCGCAGGGAGUGUC
+SECSTRUCT : ..((((((((..(((((....))))).........)))).....(((...((((......))))...)))..).)))
+

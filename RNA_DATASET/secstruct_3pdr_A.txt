@@ -1,0 +1,4 @@
+PDBID : 3pdr_A
+SEQUENCE : gGGCUUCGUUAGGUGAGGCUCCUGUAUGGAGAUACGCUGCUGCCCAAAAAUGUCCAAAGACGCCAAUGGGUCAACAGAAAUCAUCGACAUAAGGUGAUUUUUAAUGCAGCUGGAUGCUUGUCCUAUGCCAUACAGUGCUAAAGCUCUACGAUUGAAGCCCA
+SECSTRUCT : ((((((((([.(((..(((..((((((((......(((((((((((.....(((....))).....))))).....(((((((((......])))))))))..).))))).((........))....)))))))).)))...)))..))....))))))).
+

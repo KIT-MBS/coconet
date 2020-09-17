@@ -1,0 +1,4 @@
+PDBID : 4enc_A
+SEQUENCE : GGGCGAUGAGGCCCGCCCAAACUGCCCUGAAAAGGGCUGAUGGCCUCUACUG
+SECSTRUCT : .[[[[..((((((]]]]......(((((....)))))....)))))).....
+

@@ -1,0 +1,3 @@
+PDBID : 4rzd_A 
+SEQUENCE : GAGCAACUUAGGAUUUUAGGCUCCCCGGCGUGUCGAACCAUGCCGGGCCAAACCCAUAGGGCUGGCGGUCCCUGUGCGGUCAAAAUUCAUCCGCCGGAG
+SECSTRUCT : [[[[......((((((...]]]](((((((((......)))))))))....((((((((((........))))))).)))..))))))...........

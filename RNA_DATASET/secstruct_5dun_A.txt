@@ -1,0 +1,4 @@
+PDBID : 5dun_A
+SEQUENCE: uUUUuAAUGAAGCCACAGgCUGUGAGGGUCCUAAGCCCCUAAUUCAGAAGGGAA
+SECSTRUCT : .((....(((({{(((((.))))).(((.[[[..}})))...))))..]]].))
+

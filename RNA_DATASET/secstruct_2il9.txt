@@ -1,0 +1,3 @@
+PDBID : 2il9
+SEQUENCE : CUGACUAUGUGAUCUUAUUAAAAUUAGGUUAAACGAGGUUAAAAAUAGUUUUAAUAUUGCUAUAGUAGAGGUCUUGCGAAAGCUUACCACACAAGAUGGACCGGAGCGAAAGCUCCAAUAUCUAGUGUACCCUCG
+SECSTRUCT : .....(.......(.(.(..(((((.....................)))))..).)..).....)....[[..[.(......).....((...(((.]..]]...((....)).......)))...)).......

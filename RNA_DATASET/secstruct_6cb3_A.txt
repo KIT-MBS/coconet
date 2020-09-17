@@ -1,0 +1,4 @@
+PDBID : 6cb3_A
+SEQUENCE : AAAGGGGAGUAGCGUCGGGAAACCGAAACAAAGUCGUCAAUUCGUGAGGAAACUCACCGGCUUUGUUGACAUACGAAAGUAUGUUUAGCAAGACCUUUC
+SECSTRUCT : (((((......((.((((....))))((((((((((.......(((((....)))))))))))))))(((((((....)))))))..))....))))).
+

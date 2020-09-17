@@ -1,0 +1,4 @@
+PDBID : 4tzx_X
+SEQUENCE : GGGAAGAUAUAAUCCUAAUGAUAUGGUUUGGGAGUUUCUACCAAGAGCCUUAAACUCUUGAUUAUCUUCCC
+SECSTRUCT : ((((((((((..((((((......[[.))))))[.....)]((((((]].....))))))..)))))))))
+

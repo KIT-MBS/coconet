@@ -1,0 +1,4 @@
+PDBID : 3rg5_A
+SEQUENCE : gCCCGGAUGAUCCUCAGUGGUCUGGGGUGCAGGCUUCAAACCUGUAGCUGUUUAGCGACAGAGUGGUUCAAUUCCACCUUUCGGGC
+SECSTRUCT : (((((((.(..((((((..[.))))))((((((.......)))))).(((((....))))).((((..]....))))).)))))))
+

@@ -1,0 +1,4 @@
+PDBID : 4qln_A
+SEQUENCE : GAUCGCUGAACCCGAagggGCGGGGGACCCAGGGGGCGAAUCUCUUCCGAAAGGAAGAGUAGGGUUACUCCUUCGACCCGAGCCCGUCAGCUAACCUCGCAAGCGUCCGAAGGAGAA
+SECSTRUCT : ...((((...(((...)))((((((....(..(((((....(((((((....)))))))..(((((.[[[[[[[)))))..))))..).)....)))))).))))...]]]]]]]..
+

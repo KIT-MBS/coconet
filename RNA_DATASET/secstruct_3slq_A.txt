@@ -1,0 +1,4 @@
+PDBID : 3slq_A
+SEQUENCE : gGCCUUAUACAGGGUAGCAUAAUGGGCUACUGACCCCGCCUUCAAACCUAUUUGGAGACUAUAAGGU
+SECSTRUCT : .(((((((((..((((((.....[[))))))[.....)](((((((]]..)))))))..))))))))
+
