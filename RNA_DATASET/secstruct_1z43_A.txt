@@ -1,5 +1,0 @@
-PDBID : 1z43_A
-
-SEQUENCE : gCUCGGCGGUGGGGGAGCAUCUCCUGUAGGGGAGAUGUAACCCCCUUUACCUGCCGAACCCCGCCAGGCCCGGAAGGGAGCAACGGUAGGCAGGACGUCGG
-SECSTRUCT : ..((((((..(((((..((((((((....))))))))...)))))....((((((.....(((.....(((....))).....)))..)))))).))))))
-

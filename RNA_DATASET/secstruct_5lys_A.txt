@@ -1,4 +1,0 @@
-PDBID : 5lys_A
-SEQUENCE : gGGAUCUGUCACCCCAuUGAUCGCCUUCGGGCUGAUCUGGCUGGCUAGGCGGGUCC
-SECSTRUCT : .(((((((((.(((((..(((((((....))).)))))))..))...)))))))))
-

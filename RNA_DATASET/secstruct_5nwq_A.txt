@@ -1,4 +1,0 @@
-PDBID : 5nwq_A
-SEQUENCE : cCGGACGAGGUGCGCCGUACCCGGUCAGGACAAGACGGcGC
-SECSTRUCT : [[[[.......(((((((.(]]]]....).....)))))))
-

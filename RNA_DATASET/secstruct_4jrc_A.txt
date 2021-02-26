@@ -1,4 +1,0 @@
-PDBID : 4jrc_A
-SEQUENCE : gGAACCCUCUCUUCCGAAGCGAGCCGGGGGCGGUGGGAGCCCGGUGAAGACGGUUCC
-SECSTRUCT : ((((((...(((((.....[..((((((..........]))))))))))).))))))
-

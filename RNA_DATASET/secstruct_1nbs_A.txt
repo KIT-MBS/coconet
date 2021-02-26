@@ -1,5 +1,0 @@
-
-PDBID : 1nbs_A
-SEQUENCE : GCGAGCCUAGCGAAGUCAUAAGCUAGGGCAGUCUUUAGAGGCUGACGGCAGGAAAAAGAGUAUCCUUGAAAGUGCCACAGUGACGAAGUCUCGAGAGUGGAACGCGGUAAACCCCUCGCA
-SECSTRUCT : (((((((((((..........))))))((((((......))))).)((.((((.........)))).....(((((............(((()))).........)))..))))))))).
-
