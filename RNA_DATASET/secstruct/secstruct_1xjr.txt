@@ -1,0 +1,4 @@
+PDBID : 1xjr
+SEQUENCE : gGAGUUCACCGAGGCCACGCGGAGUACGAUCGAGGGUACAGUGAAUU
+SECSTRUCT : ..(((((((...((((.((((.....))..))..))).).)))))))
+

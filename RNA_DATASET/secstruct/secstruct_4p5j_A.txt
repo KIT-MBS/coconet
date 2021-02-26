@@ -1,0 +1,4 @@
+PDBID : 4p5j_A
+SEQUENCE : AGCUCGCCAGUUAGCGAGGUCUGUCUCGACACGACAGAUAAUCGGGUGCAACUCCCGCCCCUCUUCCGAGGGUCAUCGGAACCA
+SECSTRUCT : .[(((((..[...)))))(((((((.......)))))))...((((..]....))))[[[...((((((]]].].))))))...
+

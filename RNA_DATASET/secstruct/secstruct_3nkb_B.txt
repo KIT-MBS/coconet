@@ -1,0 +1,4 @@
+PDBID : 3nkb_B
+SEQUENCE : gGUCCGCAGCCUCCUCGCGGCGCAAGCUGGGCAACAUUCCGAAAGGUAAUGGCGAAUGCGGACC
+SECSTRUCT : (((((((((((.[[....))).......]]....((((((....)).)))).....))))))))
+

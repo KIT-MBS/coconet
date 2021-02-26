@@ -1,0 +1,4 @@
+PDBID : 4lvv_A
+SEQUENCE : GGAGAGUAGAUGAUUCGCGUUAAGUGUGUGUGAAUGGGAUGUCGUCACACAACGAAGCGAGAGCGCGGUGAAUCAUUGCAUCCGCUCCA
+SECSTRUCT : ((((....((((((((((((......(((((((...[[[[[...))))))).....((....))))).))))))))).]]]]].)))).
+

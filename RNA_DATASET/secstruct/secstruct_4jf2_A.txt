@@ -1,0 +1,4 @@
+PDBID : 4jf2_A
+SEQUENCE : gGAACCGCGAAAGCGGUUCCACGACGAUACUUAUUUCCUUUGAUCGUCGUUAUUACUGGCUUCGGCCACAAAGGAGA
+SECSTRUCT : ((((((((....))))))))((((((((.......[[[[[..))))))))......((((....))))..]]]]]..
+

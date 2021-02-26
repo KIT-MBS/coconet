@@ -1,0 +1,4 @@
+PDBID : 4plx_A
+SEQUENCE : gGAAGGUUUUUCUUUUCCUGAGGCGAAAGUCUCAGGUUUUGCUUUUUGGCCUUUCUUAAAAAAAAAAAAAGCAAAa
+SECSTRUCT : .[[[[[..........((((((((....))))))))(((((((((((..]]]]]...........)))))))))))
+

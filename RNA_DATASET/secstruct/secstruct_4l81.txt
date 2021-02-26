@@ -1,0 +1,4 @@
+PDBID : 4l81
+SEQUENCE : gGAUCACGAGGGGGAGACCCCGGCAACCUGGGACGGACACCCAAGGUGCUCACACCGGAGACGGUGGAUCCGGCCCGAGAGGGCAACGAAGUCCGU
+SECSTRUCT : (((((....((((....))))(((..((((((.[[[[..))).))).)))..(((((....)))))))))).((((....)))).......]]]].
+

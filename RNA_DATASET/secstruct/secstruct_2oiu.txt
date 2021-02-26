@@ -1,0 +1,4 @@
+PDBID : 2oiu
+SEQUENCE : GGACCUCGGCGAAAGCCGUUCGACCAGCGAAAGCUCUUAGACAGGAGGUUAGGUGCUCCGAAAGGAGCACU
+SECSTRUCT : .(((((((((....)))(.((....(((....)))....)))..)))))).((((((((....))))))))
+

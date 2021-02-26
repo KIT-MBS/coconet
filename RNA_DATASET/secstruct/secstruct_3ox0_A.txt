@@ -1,0 +1,4 @@
+PDBID : 3ox0_A
+SEQUENCE : GGCUCUGGAGAGAACCGUUUAAUCGGUCGCCGAAGGAGCAAGCUCUGCGGAAACGCAGAGUGAAACUCUCAGGCAAAAGGACAGAGU
+SECSTRUCT : .((((((....(.((((......)))))(((...((((...((((((((....))))))))....))).).))).......))))))
+

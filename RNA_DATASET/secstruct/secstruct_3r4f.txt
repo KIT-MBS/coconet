@@ -1,0 +1,4 @@
+PDBID : 3r4f
+SEQUENCE : gGCGUGUAUGUGGGGAAACCCUGAUUGAGUUCAGCCCACAUACUUUGUUGAUGGUUGUCAAUCGCC
+SECSTRUCT : ((((.(((((((((......((((......)))))))))))))...((((((....))))))))))
+

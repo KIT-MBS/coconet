@@ -1,0 +1,4 @@
+PDBID : 5kpy_A
+SEQUENCE : GGACACUGAUGAUCGCGUGGAUAUGGCACGCAUUGAAUUGUUGGACACCGUAAAUGUCCUAACACGUGUCC
+SECSTRUCT : ((((((......(.(((((.....[[))))))..(.......(((((]].....)))))...)..))))))
+

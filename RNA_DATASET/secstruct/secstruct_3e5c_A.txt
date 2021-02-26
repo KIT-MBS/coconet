@@ -1,0 +1,4 @@
+PDBID : 3e5c_A
+SEQUENCE : gUUCCCGAAAGGAUGGCGGAAACGCCAGAUGCCUUGUAACCGAAAGGGGGAAU
+SECSTRUCT : ((((((..((((.(((((....)))))....))))....((....))))))))
+

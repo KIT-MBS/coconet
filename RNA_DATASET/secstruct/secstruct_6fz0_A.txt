@@ -1,0 +1,4 @@
+PDBID : 6fz0_A
+SEQUENCE : aGGcGCAUUUGaACUGUAUUGUACGCCUUGCAGCAAAAGUACUAAAAA
+SECSTRUCT : [[[[..............((((((]]]]((...))...)))).))...
+

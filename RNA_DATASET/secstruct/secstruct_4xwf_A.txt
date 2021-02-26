@@ -1,0 +1,4 @@
+PDBID : 4xwf_A
+SEQUENCE : GGGUCGUGACUGGCGAACAGGUGGGAAACCACCGGGGAGCGACCCUUGCCGCCCGCCUGGGCAA
+SECSTRUCT : (((((((..((........(((((....))))).))..)))))))(((((.........)))))
+

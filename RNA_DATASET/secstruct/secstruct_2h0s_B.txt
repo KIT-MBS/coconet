@@ -1,0 +1,4 @@
+PDBID : 2h0s_B
+SEQUENCE : GGCUUUAAGUUGACGAGGGCAGGGUUUAUCGAGACAUCGGCGGGUGCCCUGCGGUCUUCCUGCGACCGUUAGAGGACUGGuAAAACCACAGGCGACUGUGGCAUAGAGCAGUCCGGGCAGGAa
+SECSTRUCT : .............[[[...((((((...]]]..............))))))[[[[[.((((((]]]]].....((((((......((((((....)))))).......))))))..)))))).
+

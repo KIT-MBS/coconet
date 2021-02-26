@@ -1,0 +1,3 @@
+PDBID : 6cu1_A
+SEQUENCE : GGGUGGCUCACAUUUGUUGCGGGUUCGAGACCCGUCAGAGCGAAAGCUCUGUAGCUCAAUGGUAGAGCGGUGUAGUCACC
+SECSTRUCT : .(((((((.(((((....(((((..[....)))))((((((....))))))..((((....]..))))))))))))))))

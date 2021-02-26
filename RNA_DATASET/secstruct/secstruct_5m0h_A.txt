@@ -1,0 +1,4 @@
+PDBID : 5m0h_A
+SEQUENCE : gAUAACUGAAUCGCUAAGGAUGAAAGUCUAUGCGACAUUAUC
+SECSTRUCT : (((((.((..((((...((((....))))..)))))))))))
+

@@ -1,0 +1,4 @@
+PDBID : 4yaz_A
+SEQUENCE : gGUACACGACAAUACUAAACCAUCCGCGAGGAUGGGGCGGAAAGCCUAAGGGUCUCCCUGAGACAGCCGGGCUGCCGAAAUAUC
+SECSTRUCT : ((((..((......((...((((((....))))))..[))...((((..(((((((...))))).]))))))...))...))))
+

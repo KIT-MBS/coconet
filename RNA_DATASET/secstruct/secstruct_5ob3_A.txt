@@ -1,0 +1,4 @@
+PDBID : 5ob3_A
+SEQUENCE : GGGAGUACGGUGAGGGUCGGGUCCAGUAGGUACGCCUACUGUUGAGUAGAGUGUGGGCUCCGUACUCCC
+SECSTRUCT : ((((((((((.(.....(...(((((((((....)))))))..)).........)..).))))))))))
+
