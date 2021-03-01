@@ -50,7 +50,7 @@ Example:
 python -m coconet.main <msa_file>  --on_plm --num_threads 2 --max_iterations 5000 --verbose
 ```
 The optional arguments `--num_threads` and `--max_iterations` control the numbers of threads used (if OpenMP is supported) and 
-the number of gradient decent iterations, respectively. 
+gradient decent iterations, respectively. 
 
 Finally, help messages can be prited out on the screen when the command 
 ```bash
