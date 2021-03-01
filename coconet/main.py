@@ -46,11 +46,25 @@ def get_weight_matrix(matrix_size, wc_and_nwc=False):
     return COCONET_PARAMS_DICT[mat_key]
 
 
-def get_dca_data_dict(msa_file):
+def get_mean_field_dca_data_dict(msa_file):
     """
     """
     mfdca_inst =  co_evolution.get_mfdca_instance(msa_file)
     fam_dca_data_list = mfdca_inst.compute_sorted_DI_APC() 
+    fam_dca_data_dict = dict()
+    for pair, score in fam_dca_data_list:
+        fam_dca_data_dict[pair] = score 
+    return fam_dca_data_dict
+
+
+def get_plmdca_data_dict(msa_file, max_iterations=None, num_threads=None):
+    """
+    """
+    plmdca_inst = co_evolution.get_plmdca_instance(msa_file, 
+        max_iterations = max_iterations, 
+        num_threads=num_threads,
+    )
+    fam_dca_data_list = plmdca_inst.compute_sorted_FN_APC()
     fam_dca_data_dict = dict()
     for pair, score in fam_dca_data_list:
         fam_dca_data_dict[pair] = score 
@@ -96,7 +110,8 @@ def write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_us
 
 
 
-def execute_from_command_line(msa_file, matrix_size, wc_and_nwc= False, verbose=False):
+def execute_from_command_line(msa_file, matrix_size, wc_and_nwc= False, verbose=False, 
+        on_plm = False, max_iterations=None, num_threads = None):
     """
     """
     if verbose: configure_logging() 
@@ -106,8 +121,15 @@ def execute_from_command_line(msa_file, matrix_size, wc_and_nwc= False, verbose=
     alignment_data_inst = MSAData(msa_file)
     refseq = alignment_data_inst.refseq
     trimmed_msa_file = alignment_data_inst.trimmed_msa_file_path
-    
-    dca_data = get_dca_data_dict(trimmed_msa_file)
+    if on_plm:
+        logger.info('\n\tPerforming convolution on plmDCA')
+        dca_data = get_plmdca_data_dict(trimmed_msa_file, 
+            max_iterations=max_iterations, 
+            num_threads=num_threads,
+        )
+    else:
+        logger.info('\n\tPerforming convolution on mfDCA')
+        dca_data = get_mean_field_dca_data_dict(trimmed_msa_file)
     
     conv_inst  = Convolution(matrix_size)
     if not wc_and_nwc:
@@ -135,6 +157,9 @@ def run_coconet():
     parser.add_argument(CmdArgs.msa_file, help=CmdArgs.msa_file_help)
     parser.add_argument(CmdArgs.matrix_size, help=CmdArgs.matrix_size_help,  type=int, choices=(3, 5, 7), default=3)
     parser.add_argument(CmdArgs.wc_and_nwc_optional, help=CmdArgs.wc_and_nwc_optional_help, action='store_true')
+    parser.add_argument(CmdArgs.max_iterations_optional, help=CmdArgs.max_iterations_help, type=int)
+    parser.add_argument(CmdArgs.num_threads_optional, help=CmdArgs.num_threads_help, type=int)
+    parser.add_argument(CmdArgs.on_plm_optional, help=CmdArgs.on_plm_optional_help, action='store_true')
 
 
     args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
@@ -144,7 +169,11 @@ def run_coconet():
         args_dict.get(CmdArgs.msa_file),
         args_dict.get(CmdArgs.matrix_size[2:]),
         wc_and_nwc = args_dict.get(CmdArgs.wc_and_nwc_optional.strip()[2:]),
-        verbose = args_dict.get(CmdArgs.verbose_optional.strip()[2:])
+        verbose = args_dict.get(CmdArgs.verbose_optional.strip()[2:]),
+        max_iterations = args_dict.get(CmdArgs.max_iterations_optional.strip()[2:]),
+        num_threads = args_dict.get(CmdArgs.num_threads_optional.strip()[2:]),
+        on_plm = args_dict.get(CmdArgs.on_plm_optional.strip()[2:]),
+
     )
 
     return None 
