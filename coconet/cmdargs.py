@@ -24,5 +24,16 @@ class CmdArgs:
     and the other for non-Watson-Crick nucleotide pairs.
     '''
 
+    # plmDCA specific args
+    on_plm_optional = '--on_plm'
+    on_plm_optional_help = """Do convolution on top of plmDCA"""
+    
+    max_iterations_optional = '--max_iterations'
+    max_iterations_help = """Number of iterations for gradient decent 
+    for negative pseudolikelihood minimization.
+    """
+    num_threads_optional = '--num_threads'
+    num_threads_help = "Number of threads from plmDCA computation"
+
 if __name__ == '__main__':
     print('You are running module {}'.format(__file__))
