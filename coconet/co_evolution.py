@@ -38,7 +38,7 @@ def get_mfdca_instance(msa_file, pseudocount=0.5, seqid=0.8):
     return mfdca_inst 
 
 
-def get_plmdca_instance(msa_file, max_iterations=None, lambda_h=None, lambda_J=None, num_threads=None):
+def get_plmdca_instance(msa_file, max_iterations=None, lambda_h=None, lambda_J=None, num_threads=None, verbose=False):
     """
     """
     # set the max iterations as large as possible so that the iteration converges
@@ -46,7 +46,7 @@ def get_plmdca_instance(msa_file, max_iterations=None, lambda_h=None, lambda_J=N
     max_iterations = 500000 if max_iterations is None else max_iterations
     # if lambda_h and lambda_J are None, the defaults within plmDCA are used
     plmdca_inst = PseudoLikelihoodMaxDCA(msa_file, 'rna', max_iterations=max_iterations, 
-        lambda_h=lambda_h, lambda_J=lambda_J, num_threads=num_threads
+        lambda_h=lambda_h, lambda_J=lambda_J, num_threads=num_threads, verbose=verbose,
     )
     return plmdca_inst 
 
