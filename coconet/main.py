@@ -57,12 +57,13 @@ def get_mean_field_dca_data_dict(msa_file):
     return fam_dca_data_dict
 
 
-def get_plmdca_data_dict(msa_file, max_iterations=None, num_threads=None):
+def get_plmdca_data_dict(msa_file, max_iterations=None, num_threads=None, verbose=False):
     """
     """
     plmdca_inst = co_evolution.get_plmdca_instance(msa_file, 
         max_iterations = max_iterations, 
         num_threads=num_threads,
+        verbose=verbose,
     )
     fam_dca_data_list = plmdca_inst.compute_sorted_FN_APC()
     fam_dca_data_dict = dict()
@@ -71,18 +72,30 @@ def get_plmdca_data_dict(msa_file, max_iterations=None, num_threads=None):
     return fam_dca_data_dict
 
 
-def write_site_pair_score_data_to_file(sorted_data_list, output_file_path):
+def write_site_pair_score_data_to_file(sorted_data_list, output_file_path, algorithm_used, max_iterations=None, num_threads=None):
     """Since site indices are starting from zero within python we add one to
     each of them when they are being written to output file.
     """
+    formater = '#' + '='*100
+    formater += '\n'
     with open(output_file_path, 'w') as fh:
+        fh.write(formater)
+        fh.write('# This result is computed using {}\n'.format(algorithm_used))
+        if max_iterations is not None:
+            fh.write('# maximum number of gradient decent iterations: {}\n'.format(max_iterations))
+        if  num_threads is not None:
+            fh.write('# Number of threads used: {}\n'.format(num_threads))
+        fh.write('# The first and second columns are site pairs. The third column represents interaction score\n')
+        fh.write(formater)
+        
         for site_pair, score in sorted_data_list:
             i, j = site_pair[0] + 1, site_pair[1] + 1
             fh.write('{}\t{}\t{}\n'.format(i, j, score))
     return None 
 
 
-def write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_used):
+def write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_used, algorithm_used, 
+        max_iterations=None, num_threads=None):
     """
     """
     output_dir_name = 'Results_' + input_msa_file_basename
@@ -101,8 +114,11 @@ def write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_us
     sorted_dca_data = sorted(dca_data.items(), key = lambda d : d[1], reverse = True)
     sorted_coconet_data = sorted(coconet_data.items(), key = lambda d : d[1], reverse = True)
     logger.info('\n\tWriting DCA results to file {}'.format(dca_results_file))
-    write_site_pair_score_data_to_file(sorted_dca_data, dca_results_file)
-    write_site_pair_score_data_to_file(sorted_coconet_data, coconet_results_file)
+    write_site_pair_score_data_to_file(sorted_dca_data, dca_results_file, algorithm_used)
+    algorithm_used_coconet = 'convolution with a {} matrix on '.format(matrix_used) + algorithm_used
+    write_site_pair_score_data_to_file(sorted_coconet_data, coconet_results_file, algorithm_used_coconet, 
+        max_iterations=max_iterations, num_threads=num_threads
+    )
     logger.info('\n\tWriting coconet results to file {}'.format(coconet_results_file))
     return None 
 
@@ -123,12 +139,15 @@ def execute_from_command_line(msa_file, matrix_size, wc_and_nwc= False, verbose=
     trimmed_msa_file = alignment_data_inst.trimmed_msa_file_path
     if on_plm:
         logger.info('\n\tPerforming convolution on plmDCA')
+        algorithm_used = 'pseudo-likelihood maximization DCA'
         dca_data = get_plmdca_data_dict(trimmed_msa_file, 
             max_iterations=max_iterations, 
             num_threads=num_threads,
+            verbose = verbose,
         )
     else:
         logger.info('\n\tPerforming convolution on mfDCA')
+        algorithm_used = 'mean-field DCA'
         dca_data = get_mean_field_dca_data_dict(trimmed_msa_file)
     
     conv_inst  = Convolution(matrix_size)
@@ -140,7 +159,9 @@ def execute_from_command_line(msa_file, matrix_size, wc_and_nwc= False, verbose=
         matrix_used = '2x{}x{}'.format(matrix_size, matrix_size)
     # write results to file   
     input_msa_file_basename, _ext = os.path.splitext(os.path.basename(msa_file))
-    write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_used)
+    write_output_data(dca_data, coconet_data, input_msa_file_basename, matrix_used, algorithm_used, 
+        max_iterations=max_iterations, num_threads=num_threads
+    )
 
     logger.info('\n\tDone')
 
@@ -173,7 +194,6 @@ def run_coconet():
         max_iterations = args_dict.get(CmdArgs.max_iterations_optional.strip()[2:]),
         num_threads = args_dict.get(CmdArgs.num_threads_optional.strip()[2:]),
         on_plm = args_dict.get(CmdArgs.on_plm_optional.strip()[2:]),
-
     )
 
     return None 
