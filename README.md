@@ -44,6 +44,14 @@ python -m coconet.main <msa_file>  --msize 7 --wc_and_nwc --verbose
 ```
 The above command executes  **coconet** using two 7x7 matrices.
 
+In addition, convolution can be performed on top of plmDCA. To enable this feature, use the `--on_plm` optional argument.
+Example:
+```
+python -m coconet.main <msa_file>  --on_plm --num_threads 2 --max_iterations 5000 --verbose
+```
+The optional arguments `--num_threads` and `--max_iterations` control the numbers of threads used (if OpenMP is supported) and 
+the number of gradient decent iterations, respectively. 
+
 Finally, help messages can be prited out on the screen when the command 
 ```bash
 python -m coconet.main
