@@ -353,3 +353,232 @@ class Convolution:
                     # capture the unweighed 'diagonal' DCA scores
                     weighed_dca_scores[(i, j)] = unweighed_dca_scores[(i,j)]                      
         return weighed_dca_scores
+
+    
+    def objective_function(self, pdb_contacts, dca_scores, weights, refseq_len):
+        """Computes the obective/error/cost function for an RNA family.
+
+        Parameters
+        ----------
+            self : Convolution 
+                An instance of Convolution class. 
+            pdb_contacts : dict 
+                A dictionary whose keys are site pairs and values are list of PDB contact data. 
+            dca_scores : dict 
+                A dictionary whose keys are site pairs and values are DCA scores. 
+            weights : np.array()
+                A 1d numpy array of weights. 
+            
+            refseq_len: int 
+                Length of the reference sequence 
+
+        Returns 
+        -------
+            fam_cost : float 
+                RNA family cost/error value.
+        """
+        if pdb_contacts is None or dca_scores is None or weights is None:
+            logger.error('\n\tThe value of any of the arguments (pdb_contacts, dca_scores and weights) cannot be None')
+            raise ConvolutionException
+        
+        #logger.info('\n\tNumber of sites: {} '.format(refseq_len))
+        #veryfy that all site-pairs are included in both pdb_contacts and dca_scores
+        self.validate_dca_and_pdb_data(dca_scores, pdb_contacts, refseq_len)
+        # compute family objecive/cost/error function 
+        fam_cost = 0.0
+        wm_pairs = dict()
+        for i in range(refseq_len - 1):
+            for j in range(i + 1, refseq_len):
+                # generate the NxN matrix site pairs.
+                if j - i > self.__linear_dist:
+                    wm_pairs = self.get_weight_matrix_pairs(i, j)
+                    pdb_dist_ij = pdb_contacts.get((i, j))[-1]
+                    contact_val_ij= 1.0 if  pdb_dist_ij < self.__contact_dist else 0.0 
+                    # compute local error
+                    local_dca_scores = [
+                        dca_scores.get(wm_pairs[k], 0.0) for k in range(1, self.__fm_size * self.__fm_size + 1)
+                    ]
+
+                    local_cost = np.array(local_dca_scores)
+                    local_cost = np.sum(local_cost * weights) - contact_val_ij
+                    local_cost *= local_cost 
+                    fam_cost += local_cost
+        return fam_cost 
+
+
+    def objective_function_WC_and_NONWC_pairs(self, pdb_contacts, dca_scores, weights, refseq):
+        """Computes the objective/error/cost function for Watson-Crick pairs of an RNA family.
+
+        Parameters
+        ----------
+            self : Convolution 
+                An instance of Convolution class. 
+            pdb_contacts : dict 
+                A dictionary whose keys are site pairs and values are list of PDB contact data. 
+            dca_scores : dict 
+                A dictionary whose keys are site pairs and values are DCA scores. 
+            weights : np.array()
+                A 1d numpy array of weights. 
+            refseq: str 
+                The reference sequence 
+
+        Returns 
+        -------
+            fam_cost : float 
+                RNA family cost/error value.
+        """
+
+        #logger.warning('\n\tComputing objective function for WC-pairs only')
+        if pdb_contacts is None or dca_scores is None or weights is None:
+            logger.error('\n\tThe value of any of the arguments (pdb_contacts, dca_scores and weights) cannot be None')
+            raise ConvolutionException
+        site_pairs_list = dca_scores.keys()# Length of reference sequence
+        L = max(site_pairs_list, key=lambda k : k[1])[1] 
+        L = L + 1 # site pairs in dca_scores_dict are indexed from 0
+        assert L == len(refseq)
+        #logger.info('\n\tNumber of sites: {} '.format(L))
+        #verify that all site-pairs are included in both pdb_contacts and dca_scores
+        self.validate_dca_and_pdb_data(dca_scores, pdb_contacts, L)
+        # compute family objecive/cost/error function 
+        
+        fam_cost = 0.0
+        for i in range(L-1):
+            for j in range(i + 1, L):
+                # generate the NxN matrix site pairs.
+                if j - i > self.__linear_dist:
+                    wm_pairs = self.get_weight_matrix_pairs(i, j)
+                    pdb_dist_ij = pdb_contacts.get((i, j))[-1]
+                    contact_val_ij= 1.0 if  pdb_dist_ij < self.__contact_dist else 0.0 
+                    # compute local error
+                    local_dca_scores = [
+                        dca_scores.get(wm_pairs[k], 0.0) for k in range(1, self.__fm_size * self.__fm_size + 1)
+                    ]
+                    local_dca_scores = np.array(local_dca_scores)
+                    wc_pairs_factor = self.get_WC_pairs_factor(refseq, i, j)
+                    nonwc_pairs_factor = self.get_NONWC_pairs_factor(refseq, i, j)
+                    wc_local_dca_scores = local_dca_scores * wc_pairs_factor
+                    nonwc_local_dca_scores = local_dca_scores * nonwc_pairs_factor
+                    combined_local_dca_scores = np.concatenate((wc_local_dca_scores, nonwc_local_dca_scores))
+                    # weights matrix is assumed to contain WC weight elements in its first-half  and
+                    # NONWC elements in its second-half.
+                    local_cost = np.sum(combined_local_dca_scores * weights) - contact_val_ij
+                    local_cost *= local_cost 
+                    fam_cost += local_cost
+        return fam_cost
+
+
+    def gradients(self, pdb_contacts, dca_scores, weights, refseq_len, log_mssg_info=False):
+        """Computes the gradients of an RNA family.
+
+        Parameters
+        ----------
+            self : Convolution 
+                An instance of Convolution class.
+            pdb_contacts : dict 
+                A dictionary whose keys are site pairs and values are lists of PDB
+                contact data.
+            dca_scores : dict 
+                A dictionary whose keys are site pairs and values are DCA scores.
+            weights : np.array
+                A 1d numpy array of weights.
+            refseq_len: int 
+                Length of the reference sequence 
+
+        Returns
+        -------
+            fam_gradients : np.array 
+                A numpy array of gradients per family. 
+        """
+
+        if pdb_contacts is None or dca_scores is None or weights is None:
+            logger.error('\n\tThe value of any of the arguments (pdb_contacts, dca_scores and weights) cannot be None')
+            raise ConvolutionException
+        
+        if log_mssg_info: logger.info('\n\tNumber of sites: {} '.format(refseq_len))
+        #veryfy that all site-pairs are included in both pdb_contacts and dca_scores
+        self.validate_dca_and_pdb_data(dca_scores, pdb_contacts, refseq_len)
+        # compute family objecive/cost/error function 
+        fam_gradients = np.zeros((self.__fm_size * self.__fm_size,))
+        num_contacts = 0
+        for i in range(refseq_len - 1):
+            for j in range(i + 1, refseq_len):
+                if j-i > self.__linear_dist:
+                    # generate the NxN matrix site pairs.
+                    wm_pairs = self.get_weight_matrix_pairs(i, j)
+                    pdb_dist_ij = pdb_contacts.get((i, j))[-1]
+                    contact_val_ij= 1.0 if  pdb_dist_ij < self.__contact_dist else 0.0 
+                    if contact_val_ij > 0 : num_contacts += 1
+                    # compute local error
+                    local_dca_scores = [
+                        dca_scores.get(wm_pairs[k], 0.0) for k in range(1, self.__fm_size * self.__fm_size + 1)
+                    ]
+                    conv_weights_dca_scores = np.sum(np.array(local_dca_scores) * weights)
+                    deviation = conv_weights_dca_scores - contact_val_ij
+                    local_gradients = 2.0*deviation * np.array(local_dca_scores)
+                    fam_gradients += local_gradients
+        return fam_gradients
+
+
+    def gradients_WC_and_NONWC_pairs(self, pdb_contacts, dca_scores, weights, refseq, log_mssg_info=False):
+        """Computes gradients of an RNA family for Watson-Crick nucleotide pairs only. 
+        
+        Parameters
+        ----------
+            self : Convolution 
+                An instance of Convolution class.
+            pdb_contacts : dict 
+                A dictionary whose keys are site pairs and values are lists of PDB
+                contact data.
+            dca_scores : dict 
+                A dictionary whose keys are site pairs and values are DCA scores.
+            weights : np.array
+                A 1d numpy array of weights.
+            refseq_len: int 
+                Length of the reference sequence 
+            
+
+        Returns
+        -------
+            fam_gradients : np.array 
+                A numpy array of gradients per family for Watson-Crick nucleotide 
+                pairs only.
+        """
+        #logger.warning('\n\tComputing gradients for WC-pairs only')
+        if pdb_contacts is None or dca_scores is None or weights is None:
+            logger.error('\n\tThe value of any of the arguments (pdb_contacts, dca_scores and weights) cannot be None')
+            raise ConvolutionException
+        site_pairs_list = dca_scores.keys()# Length of reference sequence
+        L = max(site_pairs_list, key=lambda k : k[1])[1] 
+        L = L + 1 # site pairs in dca_scores_dict are indexed from 0
+        assert L == len(refseq)
+        if log_mssg_info: logger.info('\n\tNumber of sites: {} '.format(L))
+        #veryfy that all site-pairs are included in both pdb_contacts and dca_scores
+        self.validate_dca_and_pdb_data(dca_scores, pdb_contacts, L)
+        # compute family objecive/cost/error function 
+        fam_gradients = np.zeros((2*self.__fm_size * self.__fm_size,))
+        
+        num_contacts = 0
+        for i in range(L-1):
+            for j in range(i + 1, L):
+                if j-i > self.__linear_dist:
+                    # generate the NxN matrix site pairs.
+                    wm_pairs = self.get_weight_matrix_pairs(i ,j)
+                    pdb_dist_ij = pdb_contacts.get((i, j))[-1]
+                    contact_val_ij= 1.0 if  pdb_dist_ij < self.__contact_dist else 0.0 
+                    if contact_val_ij > 0 : num_contacts += 1
+                    # compute local error
+                    local_dca_scores = [
+                        dca_scores.get(wm_pairs[k], 0.0) for k in range(1, self.__fm_size * self.__fm_size + 1)
+                    ]
+
+                    wc_pairs_factor = self.get_WC_pairs_factor(refseq, i, j)
+                    nonwc_pairs_factor = self.get_NONWC_pairs_factor(refseq, i, j)
+                    
+                    wc_local_dca_scores = np.array(local_dca_scores) * wc_pairs_factor
+                    nonwc_local_dca_scores = np.array(local_dca_scores) * nonwc_pairs_factor 
+                    combined_local_dca_scores = np.concatenate((wc_local_dca_scores, nonwc_local_dca_scores))
+                    conv_weights_dca_scores = np.sum(combined_local_dca_scores * weights)
+                    deviation = conv_weights_dca_scores - contact_val_ij
+                    local_gradients = 2.0*deviation * combined_local_dca_scores
+                    fam_gradients += local_gradients
+        return fam_gradients
