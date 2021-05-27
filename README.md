@@ -1,5 +1,7 @@
-# coconet
-RNA contact prediction using **Co**evolution and **Co**nvolutional Neural **Net**work.
+# Introduction
+coconet or CoCoNet is a short name  for RNA contact prediction using **Co**evolution and **Co**nvolutional Neural **Net**work.
+It combines state-of-the-art DCA algorithms and a shallow convolutional neural network co enhance RNA contact prediction from multiple sequence 
+alignments of homologous RNAs. 
 Its implemented in Python and requires Python version 3.5 or later versions.
 
 # Dependencies
