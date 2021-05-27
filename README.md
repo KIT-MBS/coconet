@@ -4,7 +4,7 @@ Its implemented in Python and requires Python version 3.5 or later versions.
 
 # Dependencies
 **coconet** uses [pydca](https://github.com/KIT-MBS/pydca) to perform computations on the coevolutionary layer.
-You need to install the most recent version (i.e., version 1.22 ) of [pydca](https://github.com/KIT-MBS/pydca). 
+You need to install the most recent version (i.e., version 1.23 ) of [pydca](https://github.com/KIT-MBS/pydca). 
 By default the command 
 ```
 pip install pydca
@@ -15,7 +15,7 @@ The package can be manually downloaded or cloned using the command
 ```bash
 git clone  https://github.com/KIT-MBS/coconet
 ```
-
+## Computing Weighted Scores
 Once  **coconet** is downloaded change to the directory containing file 
 `setup.py`  and execute on the command line
 
@@ -59,3 +59,19 @@ python -m coconet.main
 is executed, i.e., by running the `coconet.main` module without any additional input from 
 the command line.
 
+## Training coconet
+
+Also, the network can be trained on the dataset using a five-fold cross validation procedure. For example, the command
+```bash
+python -m coconet.train run  --msize 5 --verbose 
+```
+trains the network using a 5x5 weight matrix using mean-field DCA as a coevolutionary layer. If plmDCA is desired, the `--on_plm` 
+optional argument can be provided, for instance as
+```bash
+python -m coconet.train run --msize 7 --on_plm --num_threads 4 --verbose
+```
+
+To see the available arguments to train the network, run the command
+```bash
+python -m coconet.train
+```
