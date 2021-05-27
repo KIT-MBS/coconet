@@ -3,6 +3,7 @@ from pydca.meanfield_dca.meanfield_dca import MeanFieldDCA
 from pydca.plmdca.plmdca import PlmDCA 
 from pydca.fasta_reader import fasta_reader
 from pydca.sequence_backmapper import scoring_matrix
+from pydca.plmdca.plmdca import PlmDCA as PseudoLikelihoodMaxDCA
 from pydca.main import configure_logging
 from Bio import pairwise2
 import matplotlib.pyplot as plt 
@@ -225,36 +226,47 @@ class CoCoNet:
         -------
             all_dca_data : dict 
         """
-        
-        pickled_dca_data_file = 'MFDCAdata.pickle'
-        if not self.recompute_dca_data(msa_files_list=self.__msa_files_list, pickled_data=pickled_dca_data_file):
-            logger.info('\n\tLoading DCA data from file {}'.format(pickled_dca_data_file))
-            with open(pickled_dca_data_file, 'rb') as fh:
-                all_dca_data_dict = pickle.load(fh)
-        else:
-            #recompute DCA scores for all families 
-            all_dca_data = dict()
-            for msa_file in self.__msa_files_list:
-                logger.info('\n\tMSA file: {}'.format(msa_file))
-                famname, _ext = os.path.splitext(os.path.basename(msa_file))
-                logger.info('\n\tFamily name: {}'.format(famname))
-                try:
-                    mfdca = MeanFieldDCA(msa_file, 'rna')
-                    dca_data = mfdca.compute_sorted_DI_APC()
-                except Exception:
-                    raise 
-                else:
-                    all_dca_data[famname] = dca_data
-            # The DCA scores are in a list of tuples. Lets convert them to a dict
-            all_dca_data_dict = dict()
-            for rna_fam in all_dca_data:
-                all_dca_data_dict[rna_fam] = dict((pair, score) for pair, score in all_dca_data[rna_fam])
-            # Pickle the recomputed DCA data 
-            with open(pickled_dca_data_file, 'wb') as fh:
-                pickle.dump(all_dca_data_dict, fh, protocol=pickle.HIGHEST_PROTOCOL)
+        all_dca_data = dict()
+        for msa_file in self.__msa_files_list:
+            logger.info('\n\tMSA file: {}'.format(msa_file))
+            famname, _ext = os.path.splitext(os.path.basename(msa_file))
+            logger.info('\n\tFamily name: {}'.format(famname))
+            try:
+                mfdca = MeanFieldDCA(msa_file, 'rna')
+                dca_data = mfdca.compute_sorted_DI_APC()
+            except Exception:
+                raise 
+            else:
+                all_dca_data[famname] = dca_data
+        # The DCA scores are in a list of tuples. Lets convert them to a dict
+        all_dca_data_dict = dict()
+        for rna_fam in all_dca_data:
+            all_dca_data_dict[rna_fam] = dict((pair, score) for pair, score in all_dca_data[rna_fam])
         return all_dca_data_dict
 
     
+    def compute_plmdca_FN_APC_scores(self, max_iterations=500000, num_threads=1, verbose=False):
+        """
+        """
+        all_dca_data = dict()
+        for msa_file in self.__msa_files_list:
+            logger.info('\n\tMSA file: {}'.format(msa_file))
+            famname, _ext = os.path.splitext(os.path.basename(msa_file))
+            logger.info('\n\tFamily name: {}'.format(famname))
+            try:
+                plmdca_inst = PseudoLikelihoodMaxDCA(msa_file, 'rna', max_iterations=max_iterations, verbose=verbose, num_threads=num_threads)
+                dca_data = plmdca_inst.compute_sorted_FN_APC()
+            except Exception:
+                raise 
+            else:
+                all_dca_data[famname] = dca_data
+        # The DCA scores are in a list of tuples. Lets convert them to a dict
+        all_dca_data_dict = dict()
+        for rna_fam in all_dca_data:
+            all_dca_data_dict[rna_fam] = dict((pair, score) for pair, score in all_dca_data[rna_fam])
+        return all_dca_data_dict
+
+
     def recompute_mapped_pdb_data(self, refseq_files_list=None, pdb_files_list=None, pickled_data=None):
         """Checks the last modification time of reference sequence files, PDB structure 
         files and pickled mapped PDB data. If any of the reference sequence files or 
@@ -661,19 +673,33 @@ class CoCoNet:
         lbfgs_result = self.train_WC_and_NONWC(weight_matrix, dca_data_train, pdb_data_train)
         return lbfgs_result.x 
 
-    def cross_validation(self, matrix_size, wc_and_nwc=False, num_trials=1, num_batchs=5, output_dir=None, on_plm=False):
+    def cross_validation(self, matrix_size=None, wc_and_nwc=False, num_batchs=5, output_dir=None, on_plm=False,
+            verbose=False, num_threads=None, max_iterations=None):
         """Performs cross validation of CocoNet 
         """
-        if output_dir is None: output_dir = 'CoCoNet_CrossValidation_Output' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S') 
-        #self.create_directories(output_dir)
+        
 
         pdb_data = self.get_pdb_data() 
-        dca_data =  self.compute_mfdca_DI_scores() 
+        if on_plm:
+            dca_data=  self.compute_plmdca_FN_APC_scores(max_iterations=max_iterations, num_threads=num_threads, verbose=verbose)
+            if wc_and_nwc and output_dir is None:
+                output_dir = f'CoCoNet_plmDCA_CrossValidation_Output_2x{matrix_size}x{matrix_size}-' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S')
+            if wc_and_nwc is False and output_dir is None:
+                output_dir = f'CoCoNet_plmDCA_CrossValidation_Output_{matrix_size}x{matrix_size}-' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S')
+        
+        else: # uses mean-field DCA
+            dca_data = self.compute_mfdca_DI_scores() 
+            if wc_and_nwc and output_dir is None:
+                output_dir = f'CoCoNet_mfDCA_CrossValidation_Output_2x{matrix_size}x{matrix_size}-' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S')
+            if wc_and_nwc is False and output_dir is None:
+                output_dir = f'CoCoNet_mfDCA_CrossValidation_Output_{matrix_size}x{matrix_size}-' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S')
+        
 
         fams_in_DCA = list(dca_data.keys())
         fams_in_PDB = list(pdb_data.keys())
         for fam in fams_in_DCA: assert fam in fams_in_PDB
         batch_len = len(fams_in_PDB)//num_batchs
+        num_trials=1 # do only one full five-fold cross validations
         for i in range(num_trials):
             # create output destination directories
             
@@ -703,50 +729,56 @@ class CoCoNet:
                     for counter, fam in enumerate(training_fams, start=1): fh.write('{}\t{}\n'.format(counter, fam))
                 # perform training
                 base_header = 'Coconet direct validation result for {} filter matrix.\nTotal number of training families: {}'
-                '''
-                mat_3x3 = self.train_3x3(dca_data_train_j, pdb_data_train_j)
-                outfile_3x3 = os.path.join(trial_batch_output_dir, 'params_3x3.txt')
-                header_mat_3x3 = base_header.format('3x3', len(training_fams))
-                np.savetxt(outfile_3x3, mat_3x3, header=header_mat_3x3)
-                
-                mat_5x5 = self.train_5x5(dca_data_train_j, pdb_data_train_j)
-                outfile_5x5 = os.path.join(trial_batch_output_dir, 'params_5x5.txt')
-                header_mat_5x5 = base_header.format('5x5', len(training_fams))
-                np.savetxt(outfile_5x5, mat_5x5, header=header_mat_5x5)
-                
-                mat_7x7 = self.train_7x7(dca_data_train_j, pdb_data_train_j)
-                outfile_7x7 = os.path.join(trial_batch_output_dir, 'params_7x7.txt')
-                header_mat_7x7 = base_header.format('7x7', len(training_fams))
-                np.savetxt(outfile_7x7, mat_7x7, header=header_mat_7x7)
-                '''
-                
-                mat_WCNWC_3x3 = self.train_WC_and_NONWC_3x3(dca_data_train_j, pdb_data_train_j)
-                outfile_WCNWC_3x3 = os.path.join(trial_batch_output_dir, 'params_WCNWC_3x3.txt')
-                header_mat_WCNWC_3x3 = base_header.format('WCNWC 3x3', len(training_fams))
-                np.savetxt(outfile_WCNWC_3x3, mat_WCNWC_3x3, header=header_mat_WCNWC_3x3)
-                '''
-                mat_WCNWC_5x5 = self.train_WC_and_NONWC_5X5(dca_data_train_j, pdb_data_train_j)
-                outfile_WCNWC_5x5 = os.path.join(trial_batch_output_dir, 'params_WCNWC_5x5.txt')
-                header_mat_WCNWC_5x5 = base_header.format('WCNWC 5x5', len(training_fams))
-                np.savetxt(outfile_WCNWC_5x5, mat_WCNWC_5x5, header=header_mat_WCNWC_5x5)
-                
-                mat_WCNWC_7x7 = self.train_WC_and_NONWC_7x7(dca_data_train_j, pdb_data_train_j)
-                outfile_WCNWC_7x7 = os.path.join(trial_batch_output_dir, 'params_WCNWC_7x7.txt')
-                header_mat_WCNWC_7x7 = base_header.format('WCNWC 7x7', len(training_fams))
-                np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)  
-                '''
+                # 3x3 
+                if matrix_size == 3 and not wc_and_nwc:
+                    mat_3x3 = self.train_3x3(dca_data_train_j, pdb_data_train_j)
+                    outfile_3x3 = os.path.join(trial_batch_output_dir, 'params_3x3.txt')
+                    header_mat_3x3 = base_header.format('3x3', len(training_fams))
+                    np.savetxt(outfile_3x3, mat_3x3, header=header_mat_3x3)
+                if matrix_size == 3 and wc_and_nwc:
+                    mat_WCNWC_3x3 = self.train_WC_and_NONWC_3x3(dca_data_train_j, pdb_data_train_j)
+                    outfile_WCNWC_3x3 = os.path.join(trial_batch_output_dir, 'params_WCNWC_3x3.txt')
+                    header_mat_WCNWC_3x3 = base_header.format('WCNWC 3x3', len(training_fams))
+                    np.savetxt(outfile_WCNWC_3x3, mat_WCNWC_3x3, header=header_mat_WCNWC_3x3)
+                # 5x5 
+                if matrix_size == 5 and not wc_and_nwc:
+                    mat_5x5 = self.train_5x5(dca_data_train_j, pdb_data_train_j)
+                    outfile_5x5 = os.path.join(trial_batch_output_dir, 'params_5x5.txt')
+                    header_mat_5x5 = base_header.format('5x5', len(training_fams))
+                    np.savetxt(outfile_5x5, mat_5x5, header=header_mat_5x5)
+                if matrix_size == 5 and wc_and_nwc:
+                    mat_WCNWC_5x5 = self.train_WC_and_NONWC_5X5(dca_data_train_j, pdb_data_train_j)
+                    outfile_WCNWC_5x5 = os.path.join(trial_batch_output_dir, 'params_WCNWC_5x5.txt')
+                    header_mat_WCNWC_5x5 = base_header.format('WCNWC 5x5', len(training_fams))
+                    np.savetxt(outfile_WCNWC_5x5, mat_WCNWC_5x5, header=header_mat_WCNWC_5x5)
+                # 7x7
+                if matrix_size == 7 and not wc_and_nwc:
+                    mat_7x7 = self.train_7x7(dca_data_train_j, pdb_data_train_j)
+                    outfile_7x7 = os.path.join(trial_batch_output_dir, 'params_7x7.txt')
+                    header_mat_7x7 = base_header.format('7x7', len(training_fams))
+                    np.savetxt(outfile_7x7, mat_7x7, header=header_mat_7x7)
+                if matrix_size == 7 and wc_and_nwc:
+                    mat_WCNWC_7x7 = self.train_WC_and_NONWC_7x7(dca_data_train_j, pdb_data_train_j)
+                    outfile_WCNWC_7x7 = os.path.join(trial_batch_output_dir, 'params_WCNWC_7x7.txt')
+                    header_mat_WCNWC_7x7 = base_header.format('WCNWC 7x7', len(training_fams))
+                    np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)    
         return None 
 # end of class CoCoNet 
 
-def execute_from_command_line(num_trials=1, matrix_size=None, wc_and_nwc=False, 
-        on_plm=False, verbose=False, output_dir=None):
+def execute_from_command_line(matrix_size=None, wc_and_nwc=False, 
+        on_plm=False, verbose=False, output_dir=None, max_iterations=None, num_threads=None):
     """
     """
-    if verbose configure_logging()
+    if matrix_size is None: matrix_size = 3 # use this default values to annotate do ouput 
+    #directory names consistent with the default values in argparser.
+    
+    if verbose: configure_logging()
     logger.info('\n\tTraining CoCoNet')
     dataset_dir = Path(__file__).parent.parent / 'RNA_DATASET'
     coconet_inst = CoCoNet(dataset_dir)
-    coconet_inst.cross_validation(matrix_size, num_trials=num_trials, wc_and_nwc=wc_and_nwc, on_plm=on_plm)
+    coconet_inst.cross_validation(matrix_size, num_threads=num_threads, wc_and_nwc=wc_and_nwc, 
+        on_plm=on_plm, verbose=verbose, max_iterations=max_iterations,
+    )
     
     return None 
 
@@ -756,16 +788,28 @@ def train_coconet():
     """
     parser = ArgumentParser() 
 
+    # This argument is added to help run help message when no positional argument is supplied
+    parser.add_argument('run', help='Execute CoCoNet training')
     parser.add_argument(CmdArgs.verbose_optional, help=CmdArgs.verbose_optional_help, action='store_true')
     parser.add_argument(CmdArgs.matrix_size, help=CmdArgs.matrix_size_help,  type=int, choices=(3, 5, 7), default=3)
     parser.add_argument(CmdArgs.wc_and_nwc_optional, help=CmdArgs.wc_and_nwc_optional_help, action='store_true')
+    parser.add_argument(CmdArgs.max_iterations_optional, help=CmdArgs.max_iterations_help, type=int, default=500000)
+    parser.add_argument(CmdArgs.num_threads_optional, help=CmdArgs.num_threads_help, type=int, default=1)
     parser.add_argument(CmdArgs.on_plm_optional, help=CmdArgs.on_plm_optional_help, action='store_true')
+
     args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
     args_dict = vars(args)
 
-
+    execute_from_command_line(
+        args_dict.get(CmdArgs.matrix_size[2:]),
+        wc_and_nwc = args_dict.get(CmdArgs.wc_and_nwc_optional.strip()[2:]),
+        verbose = args_dict.get(CmdArgs.verbose_optional.strip()[2:]),
+        max_iterations = args_dict.get(CmdArgs.max_iterations_optional.strip()[2:]),
+        num_threads = args_dict.get(CmdArgs.num_threads_optional.strip()[2:]),
+        on_plm = args_dict.get(CmdArgs.on_plm_optional.strip()[2:]),
+    )
 
 
 if __name__ =='__main__':
-    execute_from_command_line()
+    train_coconet()
 
