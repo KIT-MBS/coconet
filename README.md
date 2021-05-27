@@ -15,7 +15,7 @@ The package can be manually downloaded or cloned using the command
 ```bash
 git clone  https://github.com/KIT-MBS/coconet
 ```
-## Computing Weighted Scores
+## Computing weighted scores
 Once  **coconet** is downloaded change to the directory containing file 
 `setup.py`  and execute on the command line
 
