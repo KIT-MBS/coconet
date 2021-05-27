@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from scipy.optimize import minimize as scipy_minimize
 from  .convolution import Convolution
 from .inputreader import InputReader
-from scipy.optimize import minimize # Redundant 
+from .cmdargs import CmdArgs
 import subprocess
 import numpy as np
 import logging 
@@ -19,6 +19,8 @@ from datetime import datetime
 import pickle
 import random
 from pathlib import Path
+from argparse import ArgumentParser
+import sys 
 
 
 logger = logging.getLogger(__name__)
@@ -659,7 +661,7 @@ class CoCoNet:
         lbfgs_result = self.train_WC_and_NONWC(weight_matrix, dca_data_train, pdb_data_train)
         return lbfgs_result.x 
 
-    def cross_validation(self, num_trials=1, num_batchs=5, output_dir=None, on_plm=False):
+    def cross_validation(self, matrix_size, wc_and_nwc=False, num_trials=1, num_batchs=5, output_dir=None, on_plm=False):
         """Performs cross validation of CocoNet 
         """
         if output_dir is None: output_dir = 'CoCoNet_CrossValidation_Output' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S') 
@@ -701,12 +703,12 @@ class CoCoNet:
                     for counter, fam in enumerate(training_fams, start=1): fh.write('{}\t{}\n'.format(counter, fam))
                 # perform training
                 base_header = 'Coconet direct validation result for {} filter matrix.\nTotal number of training families: {}'
-                
+                '''
                 mat_3x3 = self.train_3x3(dca_data_train_j, pdb_data_train_j)
                 outfile_3x3 = os.path.join(trial_batch_output_dir, 'params_3x3.txt')
                 header_mat_3x3 = base_header.format('3x3', len(training_fams))
                 np.savetxt(outfile_3x3, mat_3x3, header=header_mat_3x3)
-                '''
+                
                 mat_5x5 = self.train_5x5(dca_data_train_j, pdb_data_train_j)
                 outfile_5x5 = os.path.join(trial_batch_output_dir, 'params_5x5.txt')
                 header_mat_5x5 = base_header.format('5x5', len(training_fams))
@@ -716,13 +718,13 @@ class CoCoNet:
                 outfile_7x7 = os.path.join(trial_batch_output_dir, 'params_7x7.txt')
                 header_mat_7x7 = base_header.format('7x7', len(training_fams))
                 np.savetxt(outfile_7x7, mat_7x7, header=header_mat_7x7)
-
+                '''
                 
                 mat_WCNWC_3x3 = self.train_WC_and_NONWC_3x3(dca_data_train_j, pdb_data_train_j)
                 outfile_WCNWC_3x3 = os.path.join(trial_batch_output_dir, 'params_WCNWC_3x3.txt')
                 header_mat_WCNWC_3x3 = base_header.format('WCNWC 3x3', len(training_fams))
                 np.savetxt(outfile_WCNWC_3x3, mat_WCNWC_3x3, header=header_mat_WCNWC_3x3)
-                
+                '''
                 mat_WCNWC_5x5 = self.train_WC_and_NONWC_5X5(dca_data_train_j, pdb_data_train_j)
                 outfile_WCNWC_5x5 = os.path.join(trial_batch_output_dir, 'params_WCNWC_5x5.txt')
                 header_mat_WCNWC_5x5 = base_header.format('WCNWC 5x5', len(training_fams))
@@ -736,18 +738,34 @@ class CoCoNet:
         return None 
 # end of class CoCoNet 
 
-def execute_from_command_line():
+def execute_from_command_line(num_trials=1, matrix_size=None, wc_and_nwc=False, 
+        on_plm=False, verbose=False, output_dir=None):
     """
     """
+    if verbose configure_logging()
     logger.info('\n\tTraining CoCoNet')
     dataset_dir = Path(__file__).parent.parent / 'RNA_DATASET'
     coconet_inst = CoCoNet(dataset_dir)
-    coconet_inst.cross_validation()
+    coconet_inst.cross_validation(matrix_size, num_trials=num_trials, wc_and_nwc=wc_and_nwc, on_plm=on_plm)
     
     return None 
 
 
+def train_coconet():
+    """
+    """
+    parser = ArgumentParser() 
+
+    parser.add_argument(CmdArgs.verbose_optional, help=CmdArgs.verbose_optional_help, action='store_true')
+    parser.add_argument(CmdArgs.matrix_size, help=CmdArgs.matrix_size_help,  type=int, choices=(3, 5, 7), default=3)
+    parser.add_argument(CmdArgs.wc_and_nwc_optional, help=CmdArgs.wc_and_nwc_optional_help, action='store_true')
+    parser.add_argument(CmdArgs.on_plm_optional, help=CmdArgs.on_plm_optional_help, action='store_true')
+    args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
+    args_dict = vars(args)
+
+
+
+
 if __name__ =='__main__':
-    configure_logging()
     execute_from_command_line()
 
