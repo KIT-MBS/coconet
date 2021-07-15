@@ -720,7 +720,7 @@ class CoCoNet:
                 dca_data_train_j = { fam : dca_data[fam] for fam in training_fams }
                 pdb_data_train_j = {fam : pdb_data[fam] for fam in training_fams}
                 
-                metadata_file = os.path.join(trial_batch_output_dir, 'metadata_batch_{}.txt'.format(j + 1)) 
+                metadata_file = os.path.join(trial_batch_output_dir, 'metadata_fold_{}.txt'.format(j + 1)) 
                 
                 with open(metadata_file, 'w') as fh: 
                     fh.write('Testset RNA Families \n')
