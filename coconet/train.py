@@ -674,7 +674,7 @@ class CoCoNet:
         return lbfgs_result.x 
 
     def cross_validation(self, matrix_size=None, wc_and_nwc=False, num_batchs=5, output_dir=None, on_plm=False,
-            verbose=False, num_threads=None, max_iterations=None):
+            verbose=False, num_threads=None, max_iterations=None, num_trials=1):
         """Performs cross validation of CocoNet 
         """
         
@@ -699,18 +699,17 @@ class CoCoNet:
         fams_in_PDB = list(pdb_data.keys())
         for fam in fams_in_DCA: assert fam in fams_in_PDB
         batch_len = len(fams_in_PDB)//num_batchs
-        num_trials=1 # do only one full five-fold cross validations
+
         for i in range(num_trials):
             # create output destination directories
             
             trial_dir = 'trial_{}'.format(i + 1) 
             trial_output_dir =  os.path.join(output_dir, trial_dir)
-            
             # shuffle the list of RNAs 
             random.shuffle(fams_in_PDB)
             #divide families into batches
             for j in range(num_batchs):
-                trial_batch_output_dir = os.path.join(trial_output_dir, 'batch_{}'.format(j + 1))
+                trial_batch_output_dir = os.path.join(trial_output_dir, 'fold_{}'.format(j + 1))
                 self.create_directories(trial_batch_output_dir)
                 lower_bound = j * batch_len 
                 upper_bound = lower_bound + batch_len
@@ -722,13 +721,14 @@ class CoCoNet:
                 pdb_data_train_j = {fam : pdb_data[fam] for fam in training_fams}
                 
                 metadata_file = os.path.join(trial_batch_output_dir, 'metadata_batch_{}.txt'.format(j + 1)) 
+                
                 with open(metadata_file, 'w') as fh: 
                     fh.write('Testset RNA Families \n')
                     for counter, fam in enumerate(testset_fams, start=1): fh.write('{}\t{}\n'.format(counter, fam))
                     fh.write('Training RNA Families\n') 
                     for counter, fam in enumerate(training_fams, start=1): fh.write('{}\t{}\n'.format(counter, fam))
                 # perform training
-                base_header = 'Coconet direct validation result for {} filter matrix.\nTotal number of training families: {}'
+                base_header = 'Coconet cross validation result for {} filter matrix.\nTotal number of training families: {}'
                 # 3x3 
                 if matrix_size == 3 and not wc_and_nwc:
                     mat_3x3 = self.train_3x3(dca_data_train_j, pdb_data_train_j)
@@ -761,11 +761,12 @@ class CoCoNet:
                     mat_WCNWC_7x7 = self.train_WC_and_NONWC_7x7(dca_data_train_j, pdb_data_train_j)
                     outfile_WCNWC_7x7 = os.path.join(trial_batch_output_dir, 'params_WCNWC_7x7.txt')
                     header_mat_WCNWC_7x7 = base_header.format('WCNWC 7x7', len(training_fams))
-                    np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)    
+                    np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)   
+                
         return None 
 # end of class CoCoNet 
 
-def execute_from_command_line(matrix_size=None, wc_and_nwc=False, 
+def execute_from_command_line(matrix_size=None, wc_and_nwc=False, num_trials=1,
         on_plm=False, verbose=False, output_dir=None, max_iterations=None, num_threads=None):
     """
     """
@@ -777,7 +778,7 @@ def execute_from_command_line(matrix_size=None, wc_and_nwc=False,
     dataset_dir = Path(__file__).parent.parent / 'RNA_DATASET'
     coconet_inst = CoCoNet(dataset_dir)
     coconet_inst.cross_validation(matrix_size, num_threads=num_threads, wc_and_nwc=wc_and_nwc, 
-        on_plm=on_plm, verbose=verbose, max_iterations=max_iterations,
+        on_plm=on_plm, verbose=verbose, max_iterations=max_iterations, num_trials=num_trials
     )
     
     return None 
@@ -796,6 +797,7 @@ def train_coconet():
     parser.add_argument(CmdArgs.max_iterations_optional, help=CmdArgs.max_iterations_help, type=int, default=500000)
     parser.add_argument(CmdArgs.num_threads_optional, help=CmdArgs.num_threads_help, type=int, default=1)
     parser.add_argument(CmdArgs.on_plm_optional, help=CmdArgs.on_plm_optional_help, action='store_true')
+    parser.add_argument(CmdArgs.num_trials_optional, help=CmdArgs.num_trials_optional_help, type=int)
 
     args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
     args_dict = vars(args)
@@ -807,6 +809,7 @@ def train_coconet():
         max_iterations = args_dict.get(CmdArgs.max_iterations_optional.strip()[2:]),
         num_threads = args_dict.get(CmdArgs.num_threads_optional.strip()[2:]),
         on_plm = args_dict.get(CmdArgs.on_plm_optional.strip()[2:]),
+        num_trials = args_dict.get(CmdArgs.num_trials_optional.strip()[2:]),
     )
 
 

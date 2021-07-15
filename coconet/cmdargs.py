@@ -35,5 +35,9 @@ class CmdArgs:
     num_threads_optional = '--num_threads'
     num_threads_help = "Number of threads from plmDCA computation"
 
+    num_trials_optional = '--num_trials'
+    num_trials_optional_help = '''Number of repitions for cross validation. Each time a repitition is done, 
+        the RNA data is shuffiled to form new sets of RNAs in each fold'''
+
 if __name__ == '__main__':
     print('You are running module {}'.format(__file__))
