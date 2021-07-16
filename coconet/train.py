@@ -787,7 +787,7 @@ def train_coconet():
     parser.add_argument(CmdArgs.max_iterations_optional, help=CmdArgs.max_iterations_help, type=int, default=500000)
     parser.add_argument(CmdArgs.num_threads_optional, help=CmdArgs.num_threads_help, type=int, default=1)
     parser.add_argument(CmdArgs.on_plm_optional, help=CmdArgs.on_plm_optional_help, action='store_true')
-    parser.add_argument(CmdArgs.num_trials_optional, help=CmdArgs.num_trials_optional_help, type=int)
+    parser.add_argument(CmdArgs.num_trials_optional, help=CmdArgs.num_trials_optional_help, type=int, default=1)
 
     args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
     args_dict = vars(args)
