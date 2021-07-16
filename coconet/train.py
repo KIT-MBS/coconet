@@ -266,7 +266,7 @@ class CoCoNet:
             all_dca_data_dict[rna_fam] = dict((pair, score) for pair, score in all_dca_data[rna_fam])
         return all_dca_data_dict
 
-
+    #TODO  remove this method. Currently,  its not being used by get_pdb_data() method.
     def recompute_mapped_pdb_data(self, refseq_files_list=None, pdb_files_list=None, pickled_data=None):
         """Checks the last modification time of reference sequence files, PDB structure 
         files and pickled mapped PDB data. If any of the reference sequence files or 
@@ -318,30 +318,20 @@ class CoCoNet:
                 A dictionary whose keys are RNA familiy names and values dictionaries 
                 that have site pair keys and PDB data values. 
         """
-        pickled_mapped_pdb_data_file = 'MappedPDBData.pickle'
         refseq_files_list = self.get_refseq_files_list()
         pdb_files_list = self.get_pdb_files_list()
-        if not self.recompute_mapped_pdb_data(refseq_files_list=refseq_files_list, 
-                pdb_files_list=pdb_files_list, pickled_data=pickled_mapped_pdb_data_file):
-            logger.info('\n\tLoading mapped PDB contact data from {}'.format(pickled_mapped_pdb_data_file))
-            with open(pickled_mapped_pdb_data_file, 'rb') as fh:
-                mapped_pdb_data = pickle.load(fh)
-        
-        else:
-            logger.info('\n\tPickled mapped PDB contact data is outdated. Recomputing it ...')
-            txtfreader = InputReader()
-            mapped_pdb_data = dict()
-            for chain_id, pdb_file, refseq_file, msa_file in zip(self.__pdb_chains_list, pdb_files_list, refseq_files_list, self.__msa_file_names_list):
-                curr_pdb_data, _missing, _refseq_len = txtfreader.get_mapped_pdb_data(pdb_chain_id=chain_id, 
-                    refseq_file=refseq_file, pdb_file=pdb_file, linear_dist=self.__linear_dist, 
-                    contact_dist=self.__contact_dist
-                )
-                # self.__msa_file_names_list  contains the list of MSA files, not the full path of the files
-                famname, _ext =  os.path.splitext(msa_file)
-                mapped_pdb_data[famname] = curr_pdb_data
-            # pickle the newly computed data 
-            with open(pickled_mapped_pdb_data_file, 'wb') as fh:
-                pickle.dump(mapped_pdb_data, fh, protocol=pickle.HIGHEST_PROTOCOL)
+    
+        logger.info('\n\tObtaining mapped PDB data')
+        txtfreader = InputReader()
+        mapped_pdb_data = dict()
+        for chain_id, pdb_file, refseq_file, msa_file in zip(self.__pdb_chains_list, pdb_files_list, refseq_files_list, self.__msa_file_names_list):
+            curr_pdb_data, _missing, _refseq_len = txtfreader.get_mapped_pdb_data(pdb_chain_id=chain_id, 
+                refseq_file=refseq_file, pdb_file=pdb_file, linear_dist=self.__linear_dist, 
+                contact_dist=self.__contact_dist
+            )
+            # self.__msa_file_names_list  contains the list of MSA files, not the full path of the files
+            famname, _ext =  os.path.splitext(msa_file)
+            mapped_pdb_data[famname] = curr_pdb_data
         return mapped_pdb_data
 
 
