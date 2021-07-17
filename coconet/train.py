@@ -663,7 +663,7 @@ class CoCoNet:
         lbfgs_result = self.train_WC_and_NONWC(weight_matrix, dca_data_train, pdb_data_train)
         return lbfgs_result.x 
 
-    def cross_validation(self, matrix_size=None, wc_and_nwc=False, num_batchs=5, output_dir=None, on_plm=False,
+    def cross_validation(self, matrix_size=None, wc_and_nwc=False, num_batches=5, output_dir=None, on_plm=False,
             verbose=False, num_threads=None, max_iterations=None, num_trials=1):
         """Performs cross validation of CocoNet 
         """
@@ -688,7 +688,7 @@ class CoCoNet:
         fams_in_DCA = list(dca_data.keys())
         fams_in_PDB = list(pdb_data.keys())
         for fam in fams_in_DCA: assert fam in fams_in_PDB
-        batch_len = len(fams_in_PDB)//num_batchs
+        batch_len = len(fams_in_PDB)//num_batches
 
         for i in range(num_trials):
             # create output destination directories
@@ -698,12 +698,12 @@ class CoCoNet:
             # shuffle the list of RNAs 
             random.shuffle(fams_in_PDB)
             #divide families into batches
-            for j in range(num_batchs):
+            for j in range(num_batches):
                 trial_batch_output_dir = os.path.join(trial_output_dir, 'fold_{}'.format(j + 1))
                 self.create_directories(trial_batch_output_dir)
                 lower_bound = j * batch_len 
                 upper_bound = lower_bound + batch_len
-                batch_j = fams_in_PDB[lower_bound:upper_bound] if j < (num_batchs - 1) else fams_in_PDB[lower_bound:]
+                batch_j = fams_in_PDB[lower_bound:upper_bound] if j < (num_batches - 1) else fams_in_PDB[lower_bound:]
                 # take batch_j as a test set 
                 testset_fams = batch_j 
                 training_fams = [fam for fam in fams_in_PDB if fam not in testset_fams]
