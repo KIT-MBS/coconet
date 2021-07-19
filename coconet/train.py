@@ -265,42 +265,7 @@ class CoCoNet:
         for rna_fam in all_dca_data:
             all_dca_data_dict[rna_fam] = dict((pair, score) for pair, score in all_dca_data[rna_fam])
         return all_dca_data_dict
-
-    #TODO  remove this method. Currently,  its not being used by get_pdb_data() method.
-    def recompute_mapped_pdb_data(self, refseq_files_list=None, pdb_files_list=None, pickled_data=None):
-        """Checks the last modification time of reference sequence files, PDB structure 
-        files and pickled mapped PDB data. If any of the reference sequence files or 
-        PDB structure files is recently modified compared to the pickled data or 
-        pickled data does not exist the return value is True, else False. 
-
-        Parameters
-        ----------
-            self : CocoNet 
-                An instance of CocoNet class. 
-            refseq_files_list : list 
-                A list of reference sequences. 
-            pdb_files_list : list 
-                A list of PDB structure files. 
-            pickled_data : str 
-                Name of pickled PDB data.
-        
-        Returns
-        -------
-            True or False : bool 
-        """
-        if any([refseq_files_list, pdb_files_list, pickled_data]) is None:
-            logger.error('\n\tYou need to provide values for all the keyword arguments')
-            raise CocoNetException
-
-        if not os.path.exists(pickled_data): return True 
-        mtime_refseq_files = max([os.path.getmtime(f) for f in refseq_files_list])
-        mtime_pdb_files = max([os.path.getmtime(f) for f in pdb_files_list])
-        mtime_input_files = max(mtime_refseq_files, mtime_pdb_files)
-        mtime_pdb_data_dict = os.path.getmtime(pickled_data)
-        if mtime_pdb_data_dict < max(mtime_input_files, mtime_refseq_files):
-            return True
-        return False 
-
+       
     
     def get_pdb_data(self):
         """Computes mapped PDB contacts for multiple RNA families. The computed 
@@ -663,7 +628,7 @@ class CoCoNet:
         lbfgs_result = self.train_WC_and_NONWC(weight_matrix, dca_data_train, pdb_data_train)
         return lbfgs_result.x 
 
-    def cross_validation(self, matrix_size=None, wc_and_nwc=False, num_batches=5, output_dir=None, on_plm=False,
+    def cross_validation_single_matrix(self, matrix_size=None, wc_and_nwc=False, num_batches=5, output_dir=None, on_plm=False,
             verbose=False, num_threads=None, max_iterations=None, num_trials=1):
         """Performs cross validation of CocoNet 
         """
@@ -751,13 +716,100 @@ class CoCoNet:
                     mat_WCNWC_7x7 = self.train_WC_and_NONWC_7x7(dca_data_train_j, pdb_data_train_j)
                     outfile_WCNWC_7x7 = os.path.join(trial_batch_output_dir, 'params_WCNWC_7x7.txt')
                     header_mat_WCNWC_7x7 = base_header.format('WCNWC 7x7', len(training_fams))
-                    np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)   
+                    np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)
+        return None 
+
+
+    def cross_validation_all_matrices(self, num_batches=5, ouput_dir=None, on_plm=False, num_threads=1, 
+            num_trials=1, max_iterations=None, verbose=False):
+        """
+        """
+        logger.info('\n\tTraining CoCoNet for all filter matrices, i.e., for 3x3, 2x3x3, 5x5, 2x5x5, 7x7 and 2x7x7')
+
+        pdb_data = self.get_pdb_data() 
+        if on_plm:
+            dca_data=  self.compute_plmdca_FN_APC_scores(max_iterations=max_iterations, num_threads=num_threads, verbose=verbose)
+            output_dir = f'CoCoNet_plmDCA_CrossValidation_Output_All_Matrices-' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S')
+        
+        else: # uses mean-field DCA
+            dca_data = self.compute_mfdca_DI_scores() 
+            output_dir = f'CoCoNet_mfDCA_CrossValidation_Output_All_Matrices-' + datetime.now().strftime('%Y-%m-%d-%H_%M_%S')
+            
+        fams_in_DCA = list(dca_data.keys())
+        fams_in_PDB = list(pdb_data.keys())
+        for fam in fams_in_DCA: assert fam in fams_in_PDB
+        batch_len = len(fams_in_PDB)//num_batches
+
+        for i in range(num_trials):
+            # create output destination directories
+            
+            trial_dir = 'trial_{}'.format(i + 1) 
+            trial_output_dir =  os.path.join(output_dir, trial_dir)
+            # shuffle the list of RNAs 
+            random.shuffle(fams_in_PDB)
+            #divide families into batches
+            for j in range(num_batches):
+                trial_batch_output_dir = os.path.join(trial_output_dir, 'fold_{}'.format(j + 1))
+                self.create_directories(trial_batch_output_dir)
+                lower_bound = j * batch_len 
+                upper_bound = lower_bound + batch_len
+                batch_j = fams_in_PDB[lower_bound:upper_bound] if j < (num_batches - 1) else fams_in_PDB[lower_bound:]
+                # take batch_j as a test set 
+                testset_fams = batch_j 
+                training_fams = [fam for fam in fams_in_PDB if fam not in testset_fams]
+                dca_data_train_j = { fam : dca_data[fam] for fam in training_fams }
+                pdb_data_train_j = {fam : pdb_data[fam] for fam in training_fams}
+                
+                metadata_file = os.path.join(trial_batch_output_dir, 'metadata_fold_{}.txt'.format(j + 1)) 
+                
+                with open(metadata_file, 'w') as fh: 
+                    fh.write('Testset RNA Families \n')
+                    for counter, fam in enumerate(testset_fams, start=1): fh.write('{}\t{}\n'.format(counter, fam))
+                    fh.write('Training RNA Families\n') 
+                    for counter, fam in enumerate(training_fams, start=1): fh.write('{}\t{}\n'.format(counter, fam))
+                # perform training
+                base_header = 'Coconet cross validation result for {} filter matrix.\nTotal number of training families: {}'
+                # 3x3
+                mat_3x3 = self.train_3x3(dca_data_train_j, pdb_data_train_j)
+                outfile_3x3 = os.path.join(trial_batch_output_dir, 'params_3x3.txt')
+                header_mat_3x3 = base_header.format('3x3', len(training_fams))
+                np.savetxt(outfile_3x3, mat_3x3, header=header_mat_3x3)
+                
+                # 2x3x3
+                mat_WCNWC_3x3 = self.train_WC_and_NONWC_3x3(dca_data_train_j, pdb_data_train_j)
+                outfile_WCNWC_3x3 = os.path.join(trial_batch_output_dir, 'params_WCNWC_3x3.txt')
+                header_mat_WCNWC_3x3 = base_header.format('WCNWC 3x3', len(training_fams))
+                np.savetxt(outfile_WCNWC_3x3, mat_WCNWC_3x3, header=header_mat_WCNWC_3x3)
+                # 5x5 
+                mat_5x5 = self.train_5x5(dca_data_train_j, pdb_data_train_j)
+                outfile_5x5 = os.path.join(trial_batch_output_dir, 'params_5x5.txt')
+                header_mat_5x5 = base_header.format('5x5', len(training_fams))
+                np.savetxt(outfile_5x5, mat_5x5, header=header_mat_5x5)
+                
+                # 2x5x5
+                mat_WCNWC_5x5 = self.train_WC_and_NONWC_5X5(dca_data_train_j, pdb_data_train_j)
+                outfile_WCNWC_5x5 = os.path.join(trial_batch_output_dir, 'params_WCNWC_5x5.txt')
+                header_mat_WCNWC_5x5 = base_header.format('WCNWC 5x5', len(training_fams))
+                np.savetxt(outfile_WCNWC_5x5, mat_WCNWC_5x5, header=header_mat_WCNWC_5x5)
+                # 7x7
+                mat_7x7 = self.train_7x7(dca_data_train_j, pdb_data_train_j)
+                outfile_7x7 = os.path.join(trial_batch_output_dir, 'params_7x7.txt')
+                header_mat_7x7 = base_header.format('7x7', len(training_fams))
+                np.savetxt(outfile_7x7, mat_7x7, header=header_mat_7x7)
+                
+                # 2x7x7
+                mat_WCNWC_7x7 = self.train_WC_and_NONWC_7x7(dca_data_train_j, pdb_data_train_j)
+                outfile_WCNWC_7x7 = os.path.join(trial_batch_output_dir, 'params_WCNWC_7x7.txt')
+                header_mat_WCNWC_7x7 = base_header.format('WCNWC 7x7', len(training_fams))
+                np.savetxt(outfile_WCNWC_7x7, mat_WCNWC_7x7, header=header_mat_WCNWC_7x7)
                 
         return None 
+
+        
 # end of class CoCoNet 
 
 def execute_from_command_line(matrix_size=None, wc_and_nwc=False, num_trials=1,
-        on_plm=False, verbose=False, output_dir=None, max_iterations=None, num_threads=None):
+        on_plm=False, verbose=False, output_dir=None, max_iterations=None, num_threads=None, for_all_matrices=False):
     """
     """
     if matrix_size is None: matrix_size = 3 # use this default values to annotate do ouput 
@@ -767,9 +819,14 @@ def execute_from_command_line(matrix_size=None, wc_and_nwc=False, num_trials=1,
     logger.info('\n\tTraining CoCoNet')
     dataset_dir = Path(__file__).parent.parent / 'RNA_DATASET'
     coconet_inst = CoCoNet(dataset_dir)
-    coconet_inst.cross_validation(matrix_size, num_threads=num_threads, wc_and_nwc=wc_and_nwc, 
-        on_plm=on_plm, verbose=verbose, max_iterations=max_iterations, num_trials=num_trials
-    )
+    if for_all_matrices:
+        coconet_inst.cross_validation_all_matrices(on_plm = on_plm, max_iterations = max_iterations, num_threads = num_threads,
+            verbose = verbose,
+        )
+    else:
+        coconet_inst.cross_validation_single_matrix(matrix_size, num_threads = num_threads, wc_and_nwc = wc_and_nwc, 
+            on_plm = on_plm, verbose = verbose, max_iterations = max_iterations, num_trials = num_trials
+        )
     
     return None 
 
@@ -788,6 +845,7 @@ def train_coconet():
     parser.add_argument(CmdArgs.num_threads_optional, help=CmdArgs.num_threads_help, type=int, default=1)
     parser.add_argument(CmdArgs.on_plm_optional, help=CmdArgs.on_plm_optional_help, action='store_true')
     parser.add_argument(CmdArgs.num_trials_optional, help=CmdArgs.num_trials_optional_help, type=int, default=1)
+    parser.add_argument(CmdArgs.for_all_matrices_optional, help=CmdArgs.for_all_matrices_optional_help, action = 'store_true')
 
     args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
     args_dict = vars(args)
@@ -800,6 +858,7 @@ def train_coconet():
         num_threads = args_dict.get(CmdArgs.num_threads_optional.strip()[2:]),
         on_plm = args_dict.get(CmdArgs.on_plm_optional.strip()[2:]),
         num_trials = args_dict.get(CmdArgs.num_trials_optional.strip()[2:]),
+        for_all_matrices = args_dict.get(CmdArgs.for_all_matrices_optional.strip()[2:]),
     )
 
 
