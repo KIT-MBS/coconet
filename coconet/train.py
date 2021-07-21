@@ -821,7 +821,7 @@ def execute_from_command_line(matrix_size=None, wc_and_nwc=False, num_trials=1,
     coconet_inst = CoCoNet(dataset_dir)
     if for_all_matrices:
         coconet_inst.cross_validation_all_matrices(on_plm = on_plm, max_iterations = max_iterations, num_threads = num_threads,
-            verbose = verbose,
+            verbose = verbose, num_trials = num_trials
         )
     else:
         coconet_inst.cross_validation_single_matrix(matrix_size, num_threads = num_threads, wc_and_nwc = wc_and_nwc, 
