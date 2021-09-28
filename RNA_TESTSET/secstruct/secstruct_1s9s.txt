@@ -1,0 +1,5 @@
+PDBID: 1s9s
+SEQUENCE: GGCGGUACUAGUUGAGAAACUAGCUCUGUAUCUGGCGGACCCGUGGUGGAACUGUGAAGUUCGGAACACCCGGCCGCAACCCUGGGAGAGGUCCCAGGGUU
+SECSTRUCT: .((((..((((((....))))))..)))).....((((..(((.(((((((((....)))))....)))))))))))((((((((((....))))))))))
+
+

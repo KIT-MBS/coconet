@@ -1,0 +1,5 @@
+PDBID: 2krl
+SEQUENCE: gGACGGUGGCAGCACUGUCUAGCUGCGGGCAUUAGACUGGAAAACUAGUGCUCUUUGGGUAACCACUAAAAUCCCGAAAGGGUGGGCUGUGGUGACCCUCCG
+SECSTRUCT: .(((((((....))))))).......(((((((((..[.[[...)))))))))...(.((.(((((.....((.(....).).)....))))).)).)]].]
+
+

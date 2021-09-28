@@ -1,0 +1,5 @@
+PDBID: 2ke6
+SEQUENCE: gGCUUGAUUGUAUUUUUAAAUUAAUUCUUAAAAACUACAAAUUAAGCC
+SECSTRUCT: (((((.(((((((((((((........))))))).))).))).)))))
+
+

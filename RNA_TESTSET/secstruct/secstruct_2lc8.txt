@@ -1,0 +1,5 @@
+PDBID:  2lc8
+SEQUENCE: GGUCAGGGUCAGGAGCCCCCCCCUGAACCCAGGAUAACCCUCAAAGUCGGGGGGCA
+SECSTRUCT: .(((.((((((((.[[[[[[[)))).))))..))).............]]]]]]].
+
+

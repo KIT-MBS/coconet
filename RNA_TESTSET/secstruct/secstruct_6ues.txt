@@ -1,0 +1,5 @@
+PDBID: 6ues
+SEQUENCE: GGUCAUGAGUGCCAGCGUCAAGCCCCGGCUUGCUGGCCGGCAACCCUCCAACCGCGGUGGGGUGCCCCGGGUGAUGACCAGGUUGAGUAGCCGUGACGGCUACGCGGCAAGCGCGGGUC
+SECSTRUCT: ((((....(.(((((((...((.[[[[[))))))))))((((.((((((.{{{{{)).))))))))]]]]]....))))..((((.((((((.....)))))).))))....}}}}.}.
+
+

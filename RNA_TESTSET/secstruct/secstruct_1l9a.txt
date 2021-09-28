@@ -1,0 +1,5 @@
+PDBID: 1l9a
+SEQUENCE: gACACUAAGUUCGGCAUCAAUAUGGUGACCUCCCGGGAGCGGGGGACCACCAGGUUGCCUAGAGGGGUGAACCGGCCCAGGUCGGAAACGGAGCAGGUCAAAACUCCCGUGCUGAUCAGUAGUGUc
+SECSTRUCT: ((((((..(.(((((((((((.(((((..((((((....))))))..))))).))))......(((((.....(.((....(((....)))....)).)...))))).))))))).)...))))))
+
+

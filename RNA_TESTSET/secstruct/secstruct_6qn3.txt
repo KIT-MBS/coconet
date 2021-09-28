@@ -1,0 +1,5 @@
+PDBID: 6qn3
+SEQUENCE: cGUUCACCCUUCGGGGCGCAUGAAAUGGGAGUAGGGAACGGGAUUCUCAU
+SECSTRUCT: ......(((....)))........((((((((..........))))))))
+
+

@@ -1,0 +1,6 @@
+PDBID: 1p6v
+SEQUENCE: gAUUCGACGGGGACUUCGGUCCUCGGACGCGGGUUCGAUUCCCGC
+SECSTRUCT: .......(((((((....)))))))...(((((.......)))))
+
+
+

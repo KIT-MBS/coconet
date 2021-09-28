@@ -1,0 +1,4 @@
+PDBID: 3bwp
+SEQUENCE: GUGCCCGGCAUGGGUGCAGUCUAUAGGGUGAGAGUCCCGAACUGUGAAGGCAGAAGUAACAGUUAGCCUAACGCAAGGGUgUCCGUGGCGACAUGGAAUCUGAAGGAAGCGGACGGCAAACCUUCGGUCUGaGGAACACGaACUUCAUAGGCUAAUGGAUGAGUUUGCAuAACAAAACAAAGUCCUUUCUGCCAGUUGGUGAAGCAGAUUGAUGAAGGGAAAGACUGCAUUCUUACCCGGGGAGGUCUGGAAACAGAAGUCaGCAGAAGUCAUAGUACCCAGGGgAAGGACGGAACAAGUAuGGCGUUCGCGCCUAAGCUUGAACCGCCGUAUACCGAACGGUACGUACGGUGGUG
+SECSTRUCT: [{.(((((<..(..((((((((...(((.......)))..(((((..A[[[[[[[...)))))..(((...(((..((((.((((((....))))))))))...}>.{)))...)))...((((((.((((...........(((((..[...(((((((..((((.]......))))...))))a]]]]]]].)))..)))))))))....))))))...))))))))..).}.])))))(...((((....))))...).......(((.(....(((.)))...))))....(((((..((((....))))...))))).(((((((((((((....)))..)))))))))).
+

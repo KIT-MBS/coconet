@@ -1,0 +1,5 @@
+PDBID: 6hag
+SEQUENCE: GUCACAACGGCUUCCUGACGUGGCAGAUUGAAUUAUUGGAGCA
+SECSTRUCT: (((((..(.[[[.[[.)..))))).............]]]]].
+
+

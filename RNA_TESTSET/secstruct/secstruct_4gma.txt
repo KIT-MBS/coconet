@@ -1,0 +1,4 @@
+PDBID: 4gma
+SEQUENCE: UUAAAGCCUUAUGGUCGCUACCCCGGUAGCGUUAAAAGGGAAGACGGGUGAGAAUCCCGCGCAGCCCCCGCUACUGUGAGGGAGGACGAAGCCCUAAGCCACUGCCGAAAGGUGGGAAGGCAGGGUGGAGGAUGAGUCCCGAGCCAGGAGACCUGCCAUAAGGUUAGUUCGCCUUCGGGGGGAAGGUGAACA
+SECSTRUCT: ...(..((((((((((((((((..))))))).....((....(.((((.......))))){{(([[[[[[)).(((...((((...(....(.(...(((.(((((....)))))...))).).)....)......))))..}}))).....))))))))))).).(((..((((]]]]].]))))..))).
+

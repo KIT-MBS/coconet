@@ -1,0 +1,5 @@
+PDBID: 1z2j
+SEQUENCE: gGGAAGAUCUGGCCUUCCCACAAGGGAAGGCCAGGGAAUCUUCCC
+SECSTRUCT: (((((((((((((((((((....)))))))))))...))))))))
+
+
