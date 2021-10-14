@@ -5,6 +5,7 @@ import glob
 import logging 
 import subprocess
 import pickle
+import sys
 import numpy as np 
 from argparse import ArgumentParser
 from pydca.main import configure_logging
@@ -1052,14 +1053,16 @@ def main():
     """
     """
     parser = ArgumentParser(description='Parser for computing poitive predictive values')
+    parser.add_argument('compute', help='Compute PPV from raw co-evolutionary data')
     parser.add_argument('--testset', help = 'compute PPV for teset RNAs', action = 'store_true')
     parser.add_argument('--Meff', help = 'compute PPV for a set of RNAs categorized by effective number of sequences', 
         choices = ('all', 'high', 'low'), default='all'
     )
     parser.add_argument('--tertiary', help = 'compute PPV of tertiary contacts', action='store_true')
     parser.add_argument('--verbose', help = 'show logging messages on the terminal', action='store_true')
-
-    args_dict = vars(parser.parse_args())
+    
+    args = parser.parse_args(args = None if sys.argv[1:] else ['--help']) 
+    args_dict = vars(args)
     execute_from_command_line(
         testset = args_dict.get('testset'),
         Meff = args_dict.get('Meff'),
