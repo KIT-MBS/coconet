@@ -77,3 +77,17 @@ To see the available arguments to train the network, run the command
 ```bash
 python -m coconet.train
 ```
+
+## Precomputed co-evolutionary data
+
+Also, a precomputed co-evolutionary data for the RNA dataset and testset using CoCoNet and DCA-based algorithms is available in the directory `RAW_COEV_DATA_ALL`.  The average positive predictive values (PPV) from this data, e.g., for the RNA dataset 
+`CoCoNet` cross-validation and DCA-based methods, can be computed using 
+```bash
+python -m coconet.ppv compute --verbose 
+```
+This command computes average PPV at rank `L` (length of RNAs sequence). More information about computing PPV from 
+raw co-evolutionary data can be obtained by running the help command as 
+```bash
+python -m coconet.ppv  --help 
+```
+
